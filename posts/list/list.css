@@ -1,0 +1,166 @@
+/* 헤더설정 */
+.header {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-left {
+    width: 24px;
+    justify-self: start;
+    margin-right: 150px;
+}
+
+.header-center {
+    justify-self: center;
+    text-align: center;
+}
+
+.header-right {
+    width: 24px;
+    justify-self: end;
+    margin-left: 150px;
+    position: relative;
+}
+
+.horizon-line {
+    width: 100%;
+    height: 1px;
+    border: 0;
+    background-color: #000000;
+    margin: 10px auto 50px;
+}
+
+.profile-list {
+    position: relative;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.profile-image {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    width: 120px;
+    right: 0;
+    background-color: #e0e0e0;
+    color: black;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown-menu a:hover {
+    background-color: #ccc;
+}
+
+/*바디*/
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    background-color: #ffffff;
+}
+
+.wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+.list-container {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.welcome-list-text {
+    text-align: center;
+    font-size: 24px;
+}
+
+.upload-button-location {
+    display: flex;
+    padding-top: 20px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.upload-button {
+    width: 110px;
+    height: 40px;
+    background-color: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.post {
+    background-color: #f9f9f9;
+    margin-top: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.post-card-container {
+    margin-bottom: 15px;
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.post-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.post-info {
+    font-size: 14px;
+    color: #555;
+    display: inline-block;
+}
+
+.post-date {
+    font-size: 14px;
+    color: #888;
+}
+
+.post-card-line {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
+}
+
+.post-author {
+    font-size: 14px;
+    color: #444;
+}
