@@ -5,7 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordHelperText = document.querySelector('.changepassword-helper-text');
     const passwordCheckHelperText = document.querySelector('.changepassword-check-helper-text');
     const user = JSON.parse(localStorage.getItem('loggedInUser')) || {};
+    const profileImage = document.getElementById('profile-image');
+    const dropdownMenu = document.getElementById('dropdown-menu');
 
+    profileImage.addEventListener('click', () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.profile-list')) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
     function validatePassword(password) {
         const re = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
         return re.test(password);
@@ -69,4 +81,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
 });

@@ -7,7 +7,9 @@
 }
 
 .header-left {
+    width: 24px;
     justify-self: start;
+    margin-right: 150px;
 }
 
 .header-center {
@@ -16,7 +18,10 @@
 }
 
 .header-right {
+    width: 24px;
     justify-self: end;
+    margin-left: 150px;
+    position: relative;
 }
 
 .horizon-line {
@@ -27,9 +32,16 @@
     margin: 10px auto 50px;
 }
 
+.profile-list {
+    position: relative;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .profile-image {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
 }
 
 .dropdown-menu {
@@ -54,7 +66,6 @@
 .dropdown-menu a:hover {
     background-color: #ccc;
 }
-
 
 /*바디*/
 body {
@@ -190,7 +201,6 @@ a {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
-    /* 기본적으로 숨겨짐 */
     align-items: center;
     justify-content: center;
 }

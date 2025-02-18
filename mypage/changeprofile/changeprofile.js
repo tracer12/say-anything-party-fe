@@ -8,7 +8,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.querySelector('.modal');
     const cancelButton = document.querySelector('.modal-button');
     const confirmButton = document.querySelector('.modal-button-confirm');
+    const profileImage = document.getElementById('profile-image');
+    const dropdownMenu = document.getElementById('dropdown-menu');
     let profileImageUploaded = false;
+
+    profileImage.addEventListener('click', () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.profile-list')) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+
 
     const user = JSON.parse(localStorage.getItem('loggedInUser')) || {};
     emailText.textContent = user.email || "이메일 없음";
