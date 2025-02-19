@@ -119,3 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const profileImage = document.getElementById('profile-image');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    profileImage.addEventListener('click', () => {
+        const isVisible = dropdownMenu.style.display === 'block';
+        dropdownMenu.style.display = isVisible ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.profile-list')) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+});
+

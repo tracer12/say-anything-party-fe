@@ -7,7 +7,9 @@
 }
 
 .header-left {
+    width: 24px;
     justify-self: start;
+    margin-right: 150px;
 }
 
 .header-center {
@@ -16,7 +18,10 @@
 }
 
 .header-right {
+    width: 24px;
     justify-self: end;
+    margin-left: 150px;
+    position: relative;
 }
 
 /* 가로 구분선 */
@@ -28,11 +33,39 @@
     margin: 10px auto 50px;
 }
 
+.profile-list {
+    position: relative;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .profile-image {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    width: 120px;
+    right: 0;
+    background-color: #e0e0e0;
+    color: black;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.dropdown-menu a:hover {
+    background-color: #ccc;
 }
 
 /* 바디 설정 */
