@@ -30,7 +30,6 @@
     height: 1px;
     border: 0;
     background-color: #000000;
-    margin: 10px auto 50px;
 }
 
 .profile-list {
@@ -73,7 +72,7 @@ body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
-    background-color: #f9f9f9;
+    background-color: #f3f3f3;
 }
 
 .wrap {
@@ -87,10 +86,15 @@ body {
 .detail-container {
     width: 600px;
     margin: 0 auto;
-    background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.detail-horizen {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
 }
 
 /* 게시글 제목 */
@@ -101,6 +105,13 @@ body {
 }
 
 /* 작성자 및 날짜 */
+.post-image {
+    width: 100%;
+    height: auto;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
 .post-meta {
     display: flex;
     justify-content: space-between;
@@ -110,7 +121,8 @@ body {
 
 .post-author {
     font-size: 14px;
-    color: #888;
+    color: #000000;
+    font-weight: bold;
     margin-right: 10px;
     white-space: nowrap;
 }
@@ -118,7 +130,7 @@ body {
 .post-date {
     font-size: 12px;
     padding-top: 2px;
-    color: #aaa;
+    color: #000000;
     white-space: nowrap;
 }
 
@@ -139,12 +151,14 @@ body {
     display: flex;
     justify-content: center;
     gap: 10px;
+    width: 100%;
 }
 
 .like-button,
 .view-button,
 .comment-button {
     font-weight: bold;
+    background-color: #d4d4d4;
     font-size: 20px;
     width: 115px;
     height: 70px;
@@ -156,6 +170,7 @@ body {
     justify-content: center;
     padding: 5px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .like-button span,
@@ -167,11 +182,10 @@ body {
 
 .post-edit-button,
 .post-delete-button {
-    background-color: #ACA0EB;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
+    color: black;
+    padding: 5px 10px;
+    border: 1px solid;
+    border-radius: 10px;
     cursor: pointer;
 }
 
@@ -201,8 +215,10 @@ body {
 
 .comment-input-card {
     margin-top: 20px;
-    padding: 15px;
+    margin-bottom: 30px;
     border-radius: 8px;
+    background-color: white;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -222,13 +238,15 @@ body {
 
 .comment-input-button {
     background-color: #ACA0EB;
+    font-size: 15px;
     color: white;
+    font-weight: bold;
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
-    margin-top: 10px;
     cursor: pointer;
     align-self: flex-end;
+    width: 125px;
 }
 
 .comment-input-button:hover {
@@ -237,7 +255,6 @@ body {
 
 .comment-item {
     padding: 10px;
-    margin-top: 10px;
     border-radius: 8px;
 }
 
@@ -250,7 +267,8 @@ body {
 
 .comment-author-name {
     font-size: 14px;
-    color: #888;
+    color: #000000;
+    font-weight: bold;
     margin-right: 10px;
     white-space: nowrap;
 }
@@ -258,7 +276,7 @@ body {
 .comment-date {
     font-size: 12px;
     padding-top: 2px;
-    color: #aaa;
+    color: #000000;
     white-space: nowrap;
 }
 
@@ -267,7 +285,6 @@ body {
     gap: 10px;
     justify-content: flex-end;
     width: 100%;
-
 }
 
 .comment-edit-button,
@@ -277,7 +294,7 @@ body {
     color: #000000;
     font-size: 12px;
     cursor: pointer;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 5px;
 }
 

@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 저장된 게시글 id와 writerId를 localStorage에서 가져오기
     const selectedPostId = localStorage.getItem('selectedPostId');
     const selectedPostWriterId = localStorage.getItem('selectedPostWriterId');
 
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (post && writer) {
         const detailContainer = document.querySelector('.detail-container');
 
+        // 제목, 작성자, 날짜, 내용 표시
         detailContainer.innerHTML = `
             <h2 class="post-title">${post.title}</h2>
             <div class="post-meta">
@@ -21,18 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="post-delete-button">삭제</button>
                 </div>
             </div>
+
+            <hr class="detail-horizen">
+            <img src="../../sample/sampleimage/samplegray.png" class="post-image" alt="Post Image" />
+
             <p class="post-content">${post.content}</p>
 
             <!-- 좋아요, 조회수, 댓글 수 버튼 -->
             <div class="pop-actions">
-                <button class="like-button">${post.likes}<span>좋아요</span></button>
-                <button class="view-button">${post.views}<span>조회수</span></button>
+                <button class="like-button"><div>${post.likes}</div><span>좋아요수</span></button>
+                <button class="view-button"><div>${post.views}</div><span>조회수</span></button>
                 <button class="comment-button">${post.comments.length}<span>댓글수</span></button>
             </div>
 
-            <!-- 댓글 작성 부분 -->
+            <hr class="detail-horizen">
             <div class="comment-input-card">
                 <textarea class="comment-input" placeholder="댓글을 남겨주세요!"></textarea>
+                <hr class="detail-horizen">
                 <button class="comment-input-button">댓글 등록</button>
             </div>
 
@@ -43,13 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.like-button').addEventListener('click', () => {
             post.likes += 1;
             localStorage.setItem('posts', JSON.stringify(posts));
-            document.querySelector('.like-button').textContent = `좋아요 ${post.likes}`;
+            document.querySelector('.like-button div').textContent = `${post.likes}`;
         });
 
         document.querySelector('.view-button').addEventListener('click', () => {
             post.views += 1;
             localStorage.setItem('posts', JSON.stringify(posts));
-            document.querySelector('.view-button').textContent = `조회수 ${post.views}`;
+            document.querySelector('.view-button div').textContent = `${post.views}`;
         });
 
         document.querySelector('.comment-input-button').addEventListener('click', () => {
@@ -119,20 +126,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-document.addEventListener('DOMContentLoaded', () => {
-    const profileImage = document.getElementById('profile-image');
-    const dropdownMenu = document.getElementById('dropdown-menu');
-
-    profileImage.addEventListener('click', () => {
-        const isVisible = dropdownMenu.style.display === 'block';
-        dropdownMenu.style.display = isVisible ? 'none' : 'block';
-    });
-
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('.profile-list')) {
-            dropdownMenu.style.display = 'none';
-        }
-    });
-});
-
