@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 저장된 게시글 id와 writerId를 localStorage에서 가져오기
     const selectedPostId = localStorage.getItem('selectedPostId');
     const selectedPostWriterId = localStorage.getItem('selectedPostWriterId');
 
@@ -9,10 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const post = posts.find(post => post.id == selectedPostId);
     const writer = users.find(user => user.id == selectedPostWriterId);
 
+    let selectedItemForDeletion = null;
+
     if (post && writer) {
         const detailContainer = document.querySelector('.detail-container');
 
-        // 제목, 작성자, 날짜, 내용 표시
         detailContainer.innerHTML = `
             <h2 class="post-title">${post.title}</h2>
             <div class="post-meta">
@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <p class="post-content">${post.content}</p>
 
-            <!-- 좋아요, 조회수, 댓글 수 버튼 -->
             <div class="pop-actions">
                 <button class="like-button"><div>${post.likes}</div><span>좋아요수</span></button>
                 <button class="view-button"><div>${post.views}</div><span>조회수</span></button>
@@ -43,9 +42,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="comment-input-button">댓글 등록</button>
             </div>
 
-            <!-- 댓글 리스트 -->
             <div class="comments-list"></div>
         `;
+
+        const postModal = document.createElement('div');
+        postModal.classList.add('modal-post');
+        postModal.style.display = 'none';
+        postModal.innerHTML = `
+        <div class="modal">
+            <div class="modal-content">
+                <p class="modal-delete-text">게시글을 삭제하시겠습니까?</p>
+                <p>삭제한 내용은 복구할 수 없습니다.</p>
+                <button class="modal-cancel-button">취소</button>
+                <button class="modal-post-button-confirm">확인</button>
+            </div>
+        </div>
+        `;
+        detailContainer.appendChild(postModal);
+
+        const commentModal = document.createElement('div');
+        commentModal.classList.add('modal-comment');
+        commentModal.style.display = 'none';
+        commentModal.innerHTML = `
+        <div class="modal">
+            <div class="modal-content">
+                <p class="modal-comment-delete-text">댓글을 삭제하시겠습니까?</p>
+                <p>삭제한 내용은 복구할 수 없습니다.</p>
+                <button class="modal-cancel-button">취소</button>
+                <button class="modal-comment-button-confirm">확인</button>
+            </div>
+        </div>
+        `;
+        detailContainer.appendChild(commentModal);
+
+        const postDeleteButton = detailContainer.querySelector('.post-delete-button');
+        postDeleteButton.addEventListener('click', () => {
+            selectedItemForDeletion = post;
+            postModal.style.display = "flex";
+        });
+
 
         document.querySelector('.like-button').addEventListener('click', () => {
             post.likes += 1;
@@ -108,10 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 commentElement.querySelector('.comment-delete-button').addEventListener('click', () => {
-                    const commentIndex = post.comments.findIndex(c => c.id === comment.id);
-                    post.comments.splice(commentIndex, 1);
-                    localStorage.setItem('posts', JSON.stringify(posts));
-                    updateCommentsList();
+                    selectedItemForDeletion = comment;
+                    commentModal.style.display = "flex";
                 });
             });
         }
@@ -121,8 +154,54 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.post-edit-button').addEventListener('click', () => {
             localStorage.setItem('selectedPostId', selectedPostId);
             localStorage.setItem('selectedPostWriterId', selectedPostWriterId);
-
             window.location.href = '../edit/edit.html';
+        });
+
+        const modalCancelButton = document.querySelectorAll('.modal-cancel-button');
+        modalCancelButton.forEach(button => {
+            button.addEventListener('click', () => {
+                postModal.style.display = "none";
+                commentModal.style.display = "none";
+            });
+        });
+
+        const modalConfirmButton = document.querySelector('.modal-post-button-confirm');
+        modalConfirmButton.addEventListener('click', () => {
+            console.log("삭제 버튼 클릭됨");
+
+            if (selectedItemForDeletion === post) {
+                const postIndex = posts.findIndex(p => p.id == selectedPostId);
+                if (postIndex !== -1) {
+                    posts.splice(postIndex, 1);
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    alert("게시글이 삭제되었습니다.");
+                }
+            }
+
+            window.location.href = "../list/list.html";
+
+            postModal.style.display = "none";
+        });
+
+        const commentModalConfirmButton = document.querySelector('.modal-comment-button-confirm');
+        commentModalConfirmButton.addEventListener('click', () => {
+            if (selectedItemForDeletion) {
+                const commentIndex = post.comments.findIndex(c => c.id === selectedItemForDeletion.id);
+                if (commentIndex !== -1) {
+                    post.comments.splice(commentIndex, 1);
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    updateCommentsList();
+                    alert("댓글이 삭제되었습니다.");
+                }
+            }
+            commentModal.style.display = "none";
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === postModal || e.target === commentModal) {
+                postModal.style.display = "none";
+                commentModal.style.display = "none";
+            }
         });
     }
 });
