@@ -205,6 +205,10 @@ a {
     justify-content: center;
 }
 
+.modal-delete-text {
+    font-weight: bold;
+}
+
 .modal-content {
     background-color: white;
     padding: 20px;
@@ -212,18 +216,21 @@ a {
     text-align: center;
 }
 
-.modal-button {
+.modal-cancel-button {
     margin-right: 10px;
-    padding: 5px 10px;
+    padding: 5px 25px;
+    color: white;
     border: 1px solid #7F6AEE;
-    background-color: white;
+    border-radius: 10px;
+    background-color: black;
     cursor: pointer;
 }
 
 .modal-button-confirm {
-    padding: 5px 10px;
+    padding: 5px 25px;
     border: 1px solid #7F6AEE;
     background-color: #7F6AEE;
+    border-radius: 10px;
     color: white;
     cursor: pointer;
 }

@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileIcon = document.querySelector('.profile-icon');
     const deleteProfileButton = document.querySelector('.deleteprofile-button');
     const modal = document.querySelector('.modal');
-    const cancelButton = document.querySelector('.modal-button');
-    const confirmButton = document.querySelector('.modal-button-confirm');
+    const cancelButton = document.querySelector('#cancelButton');
+    const confirmButton = document.querySelector('#confirmButton');
     const profileImage = document.getElementById('profile-image');
     const dropdownMenu = document.getElementById('dropdown-menu');
     let profileImageUploaded = false;
@@ -22,10 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
     const user = JSON.parse(localStorage.getItem('loggedInUser')) || {};
     emailText.textContent = user.email || "이메일 없음";
-
 
     profileIcon.addEventListener('click', () => {
         if (!profileImageUploaded) {
@@ -50,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
             profileImageUploaded = false;
         }
     });
-
 
     nicknameInput.addEventListener('blur', () => {
         const nicknameValue = nicknameInput.value.trim();
@@ -120,6 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cancelButton.addEventListener('click', () => {
         modal.style.display = "none";
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
     });
 
     confirmButton.addEventListener('click', () => {
