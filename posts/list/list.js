@@ -32,6 +32,11 @@ function displayPosts() {
         `;
 
         listContainer.appendChild(postElement);
+        postElement.addEventListener('click', () => {
+            localStorage.setItem('selectedPostId', post.id);
+            localStorage.setItem('selectedPostWriterId', post.writerId);
+            window.location.href = '../../posts/detail/detail.html';
+        });
     });
 }
 

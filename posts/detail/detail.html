@@ -12,19 +12,40 @@
     <section class="wrap">
 
         <article class="header">
-            <div class="header-left">
-                <button class="back-button" onclick="window.location.href='../list/list.html'">&lt;</button>
-            </div>
+            <div class="header-left"></div>
             <div class="header-center">
                 <h1 class="title">아무 말 대잔치</h1>
             </div>
-            <div class="header-right">
-            </div>
+            <div class="header-right"></div>
         </article>
 
         <hr class="horizon-line" />
 
         <div class="detail-container">
+            <h2 id="post-title"></h2>
+            <div class="post-info">
+                <div id="post-author-date">
+                    <span id="author"></span> | <span id="date"></span>
+                </div>
+                <div id="edit-delete-buttons">
+                    <button id="edit-button">수정</button>
+                    <button id="delete-button">삭제</button>
+                </div>
+            </div>
+
+            <div id="post-content"></div>
+
+            <div id="post-stats">
+                <span id="likes">좋아요: 0</span>
+                <span id="views">조회수: 0</span>
+                <span id="comments">댓글 수: 0</span>
+            </div>
+
+            <div id="comment-box">
+                <textarea id="comment-input" placeholder="댓글을 입력하세요"></textarea>
+                <button id="comment-submit">댓글 등록</button>
+            </div>
+            <div id="comments-list"></div>
         </div>
     </section>
     <script src="detail.js"></script>

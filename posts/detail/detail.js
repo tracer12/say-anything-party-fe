@@ -1,106 +1,121 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const selectedPostId = localStorage.getItem('selectedPostId');
+    const selectedPostWriterId = localStorage.getItem('selectedPostWriterId');
 
-    // 로컬 스토리지에서 게시글과 사용자 데이터를 가져옵니다.
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
-    // 게시글의 ID를 URL에서 가져옵니다.
-    const urlParams = new URLSearchParams(window.location.search);
-    const postId = urlParams.get('id');
+    const post = posts.find(post => post.id == selectedPostId);
+    const writer = users.find(user => user.id == selectedPostWriterId);
 
-    // 게시글을 찾아서 표시합니다.
-    const post = posts.find(post => post.id === parseInt(postId));
+    if (post && writer) {
+        const detailContainer = document.querySelector('.detail-container');
 
-    if (post) {
-        const postElement = document.querySelector('.detail-container');
+        detailContainer.innerHTML = `
+            <h2 class="post-title">${post.title}</h2>
+            <div class="post-meta">
+                <p class="post-author">${writer.nickname}</p>
+                <p class="post-date">${post.date}</p>
+                <div class="post-actions">
+                    <button class="post-edit-button">수정</button>
+                    <button class="post-delete-button">삭제</button>
+                </div>
+            </div>
+            <p class="post-content">${post.content}</p>
 
-        const user = users.find(user => user.id === post.writerId);
+            <!-- 좋아요, 조회수, 댓글 수 버튼 -->
+            <div class="pop-actions">
+                <button class="like-button">${post.likes}<span>좋아요</span></button>
+                <button class="view-button">${post.views}<span>조회수</span></button>
+                <button class="comment-button">${post.comments.length}<span>댓글수</span></button>
+            </div>
 
-        // 게시글 제목, 작성자, 날짜, 내용 등을 표시합니다.
-        const postTitle = document.createElement('h2');
-        postTitle.classList.add('post-title');
-        postTitle.textContent = post.title;
+            <!-- 댓글 작성 부분 -->
+            <div class="comment-input-card">
+                <textarea class="comment-input" placeholder="댓글을 남겨주세요!"></textarea>
+                <button class="comment-input-button">댓글 등록</button>
+            </div>
 
-        const postMeta = document.createElement('div');
-        postMeta.classList.add('post-meta');
-        postMeta.innerHTML = `
-            <span class="post-author">${user ? user.nickname : '알 수 없음'}</span>
-            <span class="post-date">${post.date}</span>
+            <!-- 댓글 리스트 -->
+            <div class="comments-list"></div>
         `;
 
-        const postContent = document.createElement('div');
-        postContent.classList.add('post-content');
-        postContent.textContent = post.content;
-
-        // 게시글 내용과 메타 정보 추가
-        postElement.append(postTitle, postMeta, postContent);
-
-        // 댓글 입력 버튼 생성
-        const commentInputCard = document.createElement('div');
-        commentInputCard.classList.add('comment-input-card');
-        commentInputCard.innerHTML = `
-            <textarea placeholder="댓글을 남겨주세요!"></textarea>
-            <button class="comment-input-button">댓글 등록</button>
-        `;
-
-        const commentInputButton = commentInputCard.querySelector('.comment-input-button');
-        const commentInput = commentInputCard.querySelector('textarea');
-
-        commentInputButton.addEventListener('click', () => {
-            const newComment = {
-                writerId: user.id,
-                content: commentInput.value,
-                date: new Date().toISOString()
-            };
-
-            post.comments.push(newComment);
+        document.querySelector('.like-button').addEventListener('click', () => {
+            post.likes += 1;
             localStorage.setItem('posts', JSON.stringify(posts));
-
-            commentInput.value = '';
-            renderComments(post.comments);
+            document.querySelector('.like-button').textContent = `좋아요 ${post.likes}`;
         });
 
-        postElement.appendChild(commentInputCard);
+        document.querySelector('.view-button').addEventListener('click', () => {
+            post.views += 1;
+            localStorage.setItem('posts', JSON.stringify(posts));
+            document.querySelector('.view-button').textContent = `조회수 ${post.views}`;
+        });
 
-        // 댓글 목록 렌더링
-        const commentList = document.createElement('div');
-        commentList.id = 'comment-list';
-        postElement.appendChild(commentList);
+        document.querySelector('.comment-input-button').addEventListener('click', () => {
+            const commentContent = document.querySelector('.comment-input').value.trim();
+            if (commentContent) {
+                const newComment = {
+                    id: post.comments.length + 1,
+                    content: commentContent,
+                    date: new Date().toISOString(),
+                    writerId: selectedPostWriterId,
+                };
+                post.comments.push(newComment);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                updateCommentsList();
+                document.querySelector('.comment-input').value = '';
+            }
+        });
 
-        renderComments(post.comments);
+        function updateCommentsList() {
+            const commentsList = document.querySelector('.comments-list');
+            commentsList.innerHTML = '';
 
-        function renderComments(comments) {
-            commentList.innerHTML = '';
-            comments.forEach(comment => {
-                const commenter = users.find(u => u.id === comment.writerId);
-
-                const commentItem = document.createElement('div');
-                commentItem.classList.add('comment-item');
-                commentItem.innerHTML = `
+            post.comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('comment-item');
+                const commentWriter = users.find(user => user.id == comment.writerId);
+                commentElement.innerHTML = `
                     <div class="comment-header">
-                        <span class="comment-author-name">${commenter ? commenter.nickname : '알 수 없음'}</span>
+                        <span class="comment-author-name">${commentWriter ? commentWriter.nickname : '익명'}</span>
                         <span class="comment-date">${comment.date}</span>
+                        <div class="comment-actions">
+                            <button class="comment-edit-button">수정</button>
+                            <button class="comment-delete-button">삭제</button>
+                        </div>
                     </div>
                     <div class="comment-body">
                         <p class="comment-content">${comment.content}</p>
                     </div>
-                    <button class="comment-delete-button">삭제</button>
                 `;
+                commentsList.appendChild(commentElement);
 
-                const deleteButton = commentItem.querySelector('.comment-delete-button');
-                deleteButton.addEventListener('click', () => {
-                    const index = comments.indexOf(comment);
-                    comments.splice(index, 1);
-                    localStorage.setItem('posts', JSON.stringify(posts));
-                    renderComments(comments);
+                commentElement.querySelector('.comment-edit-button').addEventListener('click', () => {
+                    const newContent = prompt("수정할 댓글을 입력하세요", comment.content);
+                    if (newContent) {
+                        comment.content = newContent;
+                        localStorage.setItem('posts', JSON.stringify(posts));
+                        updateCommentsList();
+                    }
                 });
 
-                commentList.appendChild(commentItem);
+                commentElement.querySelector('.comment-delete-button').addEventListener('click', () => {
+                    const commentIndex = post.comments.findIndex(c => c.id === comment.id);
+                    post.comments.splice(commentIndex, 1);
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    updateCommentsList();
+                });
             });
         }
-    } else {
-        // 해당 게시글이 존재하지 않으면 오류 메시지 표시
-        const postElement = document.querySelector('.detail-container');
-        postElement.innerHTML = '<p>해당 게시글을 찾을 수 없습니다.</p>';
+
+        updateCommentsList();
+
+        document.querySelector('.post-edit-button').addEventListener('click', () => {
+            localStorage.setItem('selectedPostId', selectedPostId);
+            localStorage.setItem('selectedPostWriterId', selectedPostWriterId);
+
+            window.location.href = '../edit/edit.html';
+        });
     }
 });
