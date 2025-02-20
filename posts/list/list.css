@@ -47,7 +47,9 @@
 .profile-image {
     width: 30px;
     height: 30px;
+    border-radius: 50px;
     cursor: pointer;
+    background-color: #C4C4C4;
 }
 
 .dropdown-menu {

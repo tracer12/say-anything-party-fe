@@ -6,6 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileImage = document.getElementById('profile-image');
     const dropdownMenu = document.getElementById('dropdown-menu');
 
+    const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
+    if (loginUser.profileImage) {
+        profileImage.style.backgroundImage = loginUser.profileImage;
+        profileImage.style.backgroundSize = 'cover'; // 이미지를 30px x 30px로 자르고 크기에 맞게 조정
+        profileImage.style.backgroundPosition = 'center'; // 이미지를 중앙에 위치시키기
+        profileImage.style.width = '30px';
+        profileImage.style.height = '30px';
+        profileImage.style.borderRadius = '50%'; // 둥근 모서리
+    }
+
+
     profileImage.addEventListener('click', () => {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });

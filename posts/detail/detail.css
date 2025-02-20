@@ -45,10 +45,51 @@
     align-items: center;
 }
 
+.detail-profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    background-color: #C4C4C4;
+    margin-right: 5px;
+}
+
 .profile-image {
     width: 30px;
     height: 30px;
+    border-radius: 50px;
     cursor: pointer;
+    background-color: #C4C4C4;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    vertical-align: center;
+}
+
+.writer-profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    background-color: #C4C4C4;
+    margin-right: 10px;
+}
+
+.comment-author-info {
+    display: flex;
+    align-items: center;
+    vertical-align: center;
+}
+
+.comment-profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    background-color: #C4C4C4;
+    margin-right: 10px;
 }
 
 .dropdown-menu {

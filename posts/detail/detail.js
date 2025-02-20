@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropdownMenu = document.getElementById('dropdown-menu');
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
     const users = JSON.parse(localStorage.getItem('users')) || [];
+    const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || [];
 
     const post = posts.find(post => post.id == selectedPostId);
     const writer = users.find(user => user.id == selectedPostWriterId);
-
     let selectedItemForDeletion = null;
 
     if (post && writer) {
@@ -16,7 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
         detailContainer.innerHTML = `
             <h2 class="post-title">${post.title}</h2>
             <div class="post-meta">
-                <p class="post-author">${writer.nickname}</p>
+                <div class="author-info">
+                    <div class="author-profile">
+                        <div class="writer-profile-image" id="writer-profile-image"></div>
+                    </div>
+                    <p class="post-author">${writer.nickname}</p>
+                </div>
                 <p class="post-date">${post.date}</p>
                 <div class="post-actions">
                     <button class="post-edit-button">수정</button>
@@ -44,6 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="comments-list"></div>
         `;
+
+        const profileImage = document.getElementById('profile-image');
+        if (loginUser.profileImage) {
+            profileImage.style.backgroundImage = loginUser.profileImage;
+            profileImage.style.backgroundSize = 'cover';
+            profileImage.style.backgroundPosition = 'center';
+            profileImage.style.width = '30px';
+            profileImage.style.height = '30px';
+            profileImage.style.borderRadius = '50%';
+        } else {
+            profileImage.innerHTML = `<div class="default-profile"></div>`;
+        }
 
         const postModal = document.createElement('div');
         postModal.classList.add('modal-post');
@@ -75,13 +92,22 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         detailContainer.appendChild(commentModal);
 
-        // 프로필 이미지 드롭다운 메뉴
-        const profileImage = document.getElementById('profile-image');
-        profileImage.addEventListener('click', () => {
+        const writerProfileImage = document.getElementById('writer-profile-image');
+        if (writer.profileImage) {
+            writerProfileImage.style.backgroundImage = writer.profileImage;
+            writerProfileImage.style.backgroundSize = 'cover';
+            writerProfileImage.style.backgroundPosition = 'center';
+            writerProfileImage.style.width = '30px';
+            writerProfileImage.style.height = '30px';
+            writerProfileImage.style.borderRadius = '50%';
+        } else {
+            writerProfileImage.innerHTML = `<div class="default-profile"></div>`;
+        }
+
+        const profileImageInDropdown = document.getElementById('profile-image');
+        profileImageInDropdown.addEventListener('click', () => {
             dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
         });
-
-        // 드롭다운 메뉴 닫기
         document.addEventListener('click', (event) => {
             if (!event.target.closest('.profile-list')) {
                 dropdownMenu.style.display = 'none';
@@ -132,8 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const commentWriter = users.find(user => user.id == comment.writerId);
                 commentElement.innerHTML = `
                     <div class="comment-header">
+                    <div class="comment-author-info">
+                        <div class="comment-profile-image" id="comment-profile-image"></div>
                         <span class="comment-author-name">${commentWriter ? commentWriter.nickname : '익명'}</span>
                         <span class="comment-date">${comment.date}</span>
+                    </div>
                         <div class="comment-actions">
                             <button class="comment-edit-button">수정</button>
                             <button class="comment-delete-button">삭제</button>
@@ -144,6 +173,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
                 commentsList.appendChild(commentElement);
+
+                const commentProfileImage = commentElement.querySelector('#comment-profile-image');
+                if (commentWriter.profileImage) {
+                    commentProfileImage.style.backgroundImage = commentWriter.profileImage;
+                    commentProfileImage.style.backgroundSize = 'cover';
+                    commentProfileImage.style.backgroundPosition = 'center';
+                    commentProfileImage.style.width = '30px';
+                    commentProfileImage.style.height = '30px';
+                    commentProfileImage.style.borderRadius = '50%';
+                } else {
+                    commentProfileImage.innerHTML = `<div class="default-profile"></div>`;
+                }
 
                 commentElement.querySelector('.comment-edit-button').addEventListener('click', () => {
                     const newContent = prompt("수정할 댓글을 입력하세요", comment.content);
