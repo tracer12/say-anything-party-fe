@@ -7,7 +7,9 @@
 }
 
 .header-left {
+    width: 24px;
     justify-self: start;
+    margin-right: 150px;
 }
 
 .header-center {
@@ -16,7 +18,10 @@
 }
 
 .header-right {
+    width: 24px;
     justify-self: end;
+    margin-left: 150px;
+    position: relative;
 }
 
 .horizon-line {
@@ -27,12 +32,18 @@
     margin: 10px auto 50px;
 }
 
+.back-space {
+    background-color: #f3f3f3;
+    border: none;
+    font-size: 20px;
+}
+
 /*바디*/
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
-    background-color: #ffffff;
+    background-color: #f3f3f3;
 }
 
 .wrap {

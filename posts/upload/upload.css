@@ -24,6 +24,12 @@
     position: relative;
 }
 
+.back-space {
+    background-color: #f3f3f3;
+    border: none;
+    font-size: 20px;
+}
+
 .horizon-line {
     width: 100%;
     height: 1px;

@@ -32,6 +32,12 @@
     margin: 10px auto 50px;
 }
 
+.back-space {
+    background-color: #f3f3f3;
+    border: none;
+    font-size: 20px;
+}
+
 .profile-image {
     width: 30px;
     height: 30px;
