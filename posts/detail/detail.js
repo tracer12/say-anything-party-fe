@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const selectedPostId = localStorage.getItem('selectedPostId');
     const selectedPostWriterId = localStorage.getItem('selectedPostWriterId');
-
+    const dropdownMenu = document.getElementById('dropdown-menu');
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
@@ -75,12 +75,24 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         detailContainer.appendChild(commentModal);
 
+        // 프로필 이미지 드롭다운 메뉴
+        const profileImage = document.getElementById('profile-image');
+        profileImage.addEventListener('click', () => {
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // 드롭다운 메뉴 닫기
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.profile-list')) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
+
         const postDeleteButton = detailContainer.querySelector('.post-delete-button');
         postDeleteButton.addEventListener('click', () => {
             selectedItemForDeletion = post;
             postModal.style.display = "flex";
         });
-
 
         document.querySelector('.like-button').addEventListener('click', () => {
             post.likes += 1;
@@ -167,8 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const modalConfirmButton = document.querySelector('.modal-post-button-confirm');
         modalConfirmButton.addEventListener('click', () => {
-            console.log("삭제 버튼 클릭됨");
-
             if (selectedItemForDeletion === post) {
                 const postIndex = posts.findIndex(p => p.id == selectedPostId);
                 if (postIndex !== -1) {

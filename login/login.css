@@ -7,7 +7,9 @@
 }
 
 .header-left {
+    width: 24px;
     justify-self: start;
+    margin-right: 150px;
 }
 
 .header-center {
@@ -16,7 +18,10 @@
 }
 
 .header-right {
+    width: 24px;
     justify-self: end;
+    margin-left: 150px;
+    position: relative;
 }
 
 .horizon-line {
