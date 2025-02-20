@@ -36,6 +36,7 @@
     height: 1px;
     border: 0;
     background-color: #000000;
+    margin: 10px auto 50px;
 }
 
 .profile-list {
@@ -79,7 +80,9 @@ body {
     display: flex;
     justify-content: center;
     background-color: #f3f3f3;
+    overflow-y: scroll;
 }
+
 
 .wrap {
     width: 100%;
