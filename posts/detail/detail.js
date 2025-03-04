@@ -136,6 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.view-button div').textContent = `${post.views}`;
         });
 
+        function updateCommentCount() {
+            const commentCountElement = document.querySelector('.comment-button');
+            commentCountElement.innerHTML = `${post.comments.length}<span>댓글수</span>`;
+        }
+
         document.querySelector('.comment-input-button').addEventListener('click', () => {
             const commentContent = document.querySelector('.comment-input').value.trim();
             if (commentContent) {
@@ -148,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 post.comments.push(newComment);
                 localStorage.setItem('posts', JSON.stringify(posts));
                 updateCommentsList();
+                updateCommentCount();
                 document.querySelector('.comment-input').value = '';
             }
 
@@ -278,11 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedItemForDeletion === post) {
                 const postIndex = posts.findIndex(p => p.id == selectedPostId);
                 if (postIndex !== -1) {
-                    posts.splice(postIndex, 1); // 게시글 삭제
+                    posts.splice(postIndex, 1);
 
-                    // 🆕 🔹 삭제 후 ID 재정렬 (1부터 순차적으로 부여)
                     posts.forEach((post, index) => {
-                        post.id = index + 1; // id 값을 1부터 다시 설정
+                        post.id = index + 1;
                     });
 
                     localStorage.setItem('posts', JSON.stringify(posts));
