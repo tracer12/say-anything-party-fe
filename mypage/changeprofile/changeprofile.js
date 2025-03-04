@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
     emailText.textContent = loginUser.email || "이메일 없음";
+
     if (loginUser.profileImage) {
         profileImage.style.backgroundImage = loginUser.profileImage;
         profileImage.style.backgroundSize = 'cover';

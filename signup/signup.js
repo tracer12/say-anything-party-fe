@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nicknameInput = document.getElementById('nickname-input');
     const profileIcon = document.querySelector('.profile-icon');
     const signupButton = document.querySelector('.signup-button');
+    let profileImageUploaded = false;
 
     const helperTexts = {
         email: document.querySelector('.email-helper-text'),
@@ -13,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nickname: document.querySelector('.nickname-helper-text'),
     };
 
-    let profileImageUploaded = false;
 
     function setHelperText(element, message) {
         element.textContent = message;
@@ -57,17 +57,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
+        fileInput.click();
+
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-                profileIcon.style.backgroundImage = `url(${reader.result})`;
-                profileImageUploaded = true;
-            };
-            reader.readAsDataURL(file);
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const size = 160;
+                        canvas.width = size;
+                        canvas.height = size;
+                        ctx.drawImage(img, 0, 0, size, size);
+                        profileIcon.style.backgroundImage = `url(${canvas.toDataURL()})`;
+                        profileImageUploaded = true;
+
+                        profileImage.style.backgroundImage = `url(${canvas.toDataURL()})`;
+                        profileImage.style.backgroundSize = 'cover';
+                        profileImage.style.backgroundPosition = 'center';
+                        profileImage.style.width = '30px';
+                        profileImage.style.height = '30px';
+                        profileImage.style.borderRadius = '50%';
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         });
-        fileInput.click();
     });
 
     function toggleSignupButton() {

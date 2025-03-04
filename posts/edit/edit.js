@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
     const fileSelectButton = document.querySelector('.file-select-button');
     const fileSelectText = document.querySelector('.file-select-text');
+    const editButton = document.querySelector('.edit-button'); // 수정 버튼
     const post = posts.find(post => post.id == selectedPostId);
     const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
 
@@ -11,16 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (loginUser.profileImage) {
         profileImage.style.backgroundImage = loginUser.profileImage;
-        profileImage.style.backgroundSize = 'cover'; // 이미지를 30px x 30px로 자르고 크기에 맞게 조정
-        profileImage.style.backgroundPosition = 'center'; // 이미지를 중앙에 위치시키기
+        profileImage.style.backgroundSize = 'cover';
+        profileImage.style.backgroundPosition = 'center';
         profileImage.style.width = '30px';
         profileImage.style.height = '30px';
-        profileImage.style.borderRadius = '50%'; // 둥근 모서리
+        profileImage.style.borderRadius = '50%';
     }
 
     if (post) { // 기존 제목과 내용 가져오기
         document.getElementById('title-textarea').value = post.title;
         document.getElementById('contents-textarea').value = post.content;
+
+        // 로그인한 사용자가 작성자가 아닐 경우 수정 비활성화
+        if (loginUser.id !== post.writerId) {
+            editButton.disabled = true; // 버튼 비활성화
+            editButton.style.backgroundColor = "#ccc"; // 스타일 변경 (비활성화 느낌)
+            editButton.style.cursor = "not-allowed";
+            editButton.addEventListener("click", (event) => {
+                event.preventDefault();
+                alert("해당 게시글을 수정할 권한이 없습니다.");
+            });
+        }
     }
 
     fileSelectButton.addEventListener('click', () => {
@@ -42,8 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    editButton.addEventListener('click', () => {
+        // 작성자가 아닌 경우 실행 방지
+        if (loginUser.id !== post.writerId) {
+            return;
+        }
 
-    document.querySelector('.edit-button').addEventListener('click', () => {
         const updatedTitle = document.getElementById('title-textarea').value.trim();
         const updatedContent = document.getElementById('contents-textarea').value.trim();
 
@@ -63,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 게시글 수정 API 요청 (fetch)
             /*
-            fetch(`https://example.com/api/posts/{postsId}`, {
+            fetch(`https://example.com/api/posts/${selectedPostId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -71,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     title: updatedTitle,
-                    content: updatedContent
+                    content: updatedContent,
+                    image: selectedImageData
                 })
             })
             .then(response => {
