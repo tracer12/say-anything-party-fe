@@ -1,38 +1,35 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('password-input');
-    const passwordInputCheck = document.getElementById('password-input-check');
-    const changepasswordButton = document.querySelector('.changepassword-button');
-    const passwordHelperText = document.querySelector('.changepassword-helper-text');
-    const passwordCheckHelperText = document.querySelector('.changepassword-check-helper-text');
-    const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
-    const profileImage = document.getElementById('profile-image');
-    const dropdownMenu = document.getElementById('dropdown-menu');
+document.addEventListener("DOMContentLoaded", () => {
+    // 헤더 가져오기
+    fetch("../../header/header.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("header-container").innerHTML = data;
+            setupProfileDropdown(); // 프로필 드롭다운 활성화
+            updateProfileImage(); // 프로필 이미지 적용
+        })
+        .catch(error => console.error("헤더 로드 실패:", error));
 
-    if (loginUser.profileImage) {
-        profileImage.style.backgroundImage = loginUser.profileImage;
-        profileImage.style.backgroundSize = 'cover'; // 이미지를 30px x 30px로 자르고 크기에 맞게 조정
-        profileImage.style.backgroundPosition = 'center'; // 이미지를 중앙에 위치시키기
-        profileImage.style.width = '30px';
-        profileImage.style.height = '30px';
-        profileImage.style.borderRadius = '50%'; // 둥근 모서리
+    if (!document.querySelector("link[href*='header.css']")) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "../../header/header.css";
+        document.head.appendChild(link);
     }
 
-    profileImage.addEventListener('click', () => {
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-    });
+    const passwordInput = document.getElementById("password-input");
+    const passwordInputCheck = document.getElementById("password-input-check");
+    const changepasswordButton = document.querySelector(".changepassword-button");
+    const passwordHelperText = document.querySelector(".changepassword-helper-text");
+    const passwordCheckHelperText = document.querySelector(".changepassword-check-helper-text");
 
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('.profile-list')) {
-            dropdownMenu.style.display = 'none';
-        }
-    });
+    const loginUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
 
     function validatePassword(password) {
         const re = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
         return re.test(password);
     }
 
-    passwordInput.addEventListener('blur', () => {
+    passwordInput.addEventListener("blur", () => {
         const passwordValue = passwordInput.value.trim();
         if (passwordValue === "") {
             passwordHelperText.textContent = "*비밀번호를 입력해주세요.";
@@ -45,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    passwordInputCheck.addEventListener('blur', () => {
+    passwordInputCheck.addEventListener("blur", () => {
         const passwordValue = passwordInput.value.trim();
         const passwordCheckValue = passwordInputCheck.value.trim();
         if (passwordCheckValue === "") {
@@ -59,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    changepasswordButton.addEventListener('click', () => {
+    changepasswordButton.addEventListener("click", () => {
         const passwordValue = passwordInput.value.trim();
         const passwordCheckValue = passwordInputCheck.value.trim();
 
@@ -73,14 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordCheckHelperText.textContent = "*비밀번호 확인을 한 번 더 입력해주세요.";
             passwordCheckHelperText.style.visibility = "visible";
         } else {
-
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-
+            const users = JSON.parse(localStorage.getItem("users")) || [];
             const userIndex = users.findIndex(u => u.email === loginUser.email);
+
             if (userIndex !== -1) {
                 users[userIndex].password = passwordValue;
-
-                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem("users", JSON.stringify(users));
 
                 alert("비밀번호 수정이 완료되었습니다.");
 
@@ -112,9 +107,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 window.location.href = "../../login/login.html";
             } else {
-                console.error('해당 이메일의 사용자가 없습니다.');
+                console.error("해당 이메일의 사용자가 없습니다.");
             }
         }
     });
 
+    // ✅ 드롭다운 메뉴 설정
+    function setupProfileDropdown() {
+        const profileImage = document.getElementById("profile-image");
+        const dropdownMenu = document.getElementById("dropdown-menu");
+
+        if (!profileImage || !dropdownMenu) return;
+
+        profileImage.addEventListener("click", () => {
+            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest(".profile-list")) {
+                dropdownMenu.style.display = "none";
+            }
+        });
+    }
 });

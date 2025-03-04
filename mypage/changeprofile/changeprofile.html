@@ -10,23 +10,7 @@
 
 <body>
     <section class="wrap">
-        <article class="header">
-            <div class="header-left"></div>
-            <div class="header-center">
-                <h1 class="title">아무 말 대잔치</h1>
-            </div>
-            <div class="header-right">
-                <div class="profile-list">
-                    <div class="profile-image" id="profile-image"></div>
-                    <div id="dropdown-menu" class="dropdown-menu">
-                        <a href="../changeprofile/changeprofile.html">회원정보수정</a>
-                        <a href="../changepassword/changepassword.html">비밀번호수정</a>
-                        <a href="../../login/login.html">로그아웃</a>
-                    </div>
-                </div>
-            </div>
-        </article>
-        <hr class="horizon-line" />
+        <div id="header-container"></div> <!-- 헤더를 불러오는 컨테이너 -->
 
         <div class="changeprofile-container">
             <article>
@@ -38,15 +22,13 @@
             </article>
 
             <article class="upload-profile">
-                <div class="profile-icon" id="profile-icon">
-                </div>
+                <div class="profile-icon" id="profile-icon"></div>
             </article>
 
             <article>
                 <p class="email-text">이메일*</p>
                 <p id="email-text">startupcode@gmail.com</p>
             </article>
-
 
             <article>
                 <p class="nickname-text">닉네임</p>
@@ -58,16 +40,12 @@
             </article>
 
             <article class="changeprofile-button-location">
-                <button class="changeprofile-button">
-                    수정하기
-                </button>
+                <button class="changeprofile-button">수정하기</button>
             </article>
 
             <article>
                 <div class="deleteprofile-button-location">
-                    <button class="deleteprofile-button">
-                        회원 탈퇴
-                    </button>
+                    <button class="deleteprofile-button">회원 탈퇴</button>
                 </div>
             </article>
 
@@ -78,13 +56,9 @@
                     <button class="modal-button-confirm" id="confirmButton">확인</button>
                 </div>
             </div>
-
-            <!-- <article class="changeprofile-save-button-location">
-                <button class="changeprofile-save-button">
-                    수정완료
-                </button>
-            </article> -->
         </div>
+
+        <script src="../../header/header.js"></script> <!-- 헤더 로드 -->
         <script src="../changeprofile/changeprofile.js"></script>
     </section>
 </body>

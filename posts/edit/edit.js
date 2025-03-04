@@ -1,36 +1,42 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const selectedPostId = localStorage.getItem('selectedPostId');
-    const profileImage = document.getElementById('profile-image');
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
-    const fileSelectButton = document.querySelector('.file-select-button');
-    const fileSelectText = document.querySelector('.file-select-text');
-    const editButton = document.querySelector('.edit-button'); // 수정 버튼
-    const post = posts.find(post => post.id == selectedPostId);
-    const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
+document.addEventListener("DOMContentLoaded", () => {
+    // 헤더 가져오기
+    fetch("../../header/header.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("header-container").innerHTML = data;
+            setupProfileDropdown(); // 프로필 드롭다운 활성화
+        })
+        .catch(error => console.error("헤더 로드 실패:", error));
 
+    if (!document.querySelector("link[href*='header.css']")) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "../../header/header.css";
+        document.head.appendChild(link);
+    }
+
+    const selectedPostId = localStorage.getItem("selectedPostId");
+    const posts = JSON.parse(localStorage.getItem("posts")) || [];
+    const fileSelectButton = document.querySelector(".file-select-button");
+    const fileSelectText = document.querySelector(".file-select-text");
+    const editButton = document.querySelector(".edit-button"); // 수정 버튼
+    const post = posts.find(post => post.id == selectedPostId);
+    const loginUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
     let selectedImageData = null;
 
-    if (loginUser.profileImage) {
-        profileImage.style.backgroundImage = loginUser.profileImage;
-        profileImage.style.backgroundSize = 'cover';
-        profileImage.style.backgroundPosition = 'center';
-        profileImage.style.width = '30px';
-        profileImage.style.height = '30px';
-        profileImage.style.borderRadius = '50%';
-    }
-
     if (post) { // 기존 제목과 내용 가져오기
-        document.getElementById('title-textarea').value = post.title;
-        document.getElementById('contents-textarea').value = post.content;
+        document.getElementById("title-textarea").value = post.title;
+        document.getElementById("contents-textarea").value = post.content;
     }
 
-    fileSelectButton.addEventListener('click', () => {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
+    // 파일 선택 버튼 클릭 시 파일 업로드 창 띄우기
+    fileSelectButton.addEventListener("click", () => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
         fileInput.click();
 
-        fileInput.addEventListener('change', (event) => {
+        fileInput.addEventListener("change", (event) => {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -43,14 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    editButton.addEventListener('click', () => {
-        if (loginUser.id !== post.writerId) {
-            alert("해당 게시글을 삭제할 권한이 없습니다.");
-            return;
-        }
-
-        const updatedTitle = document.getElementById('title-textarea').value.trim();
-        const updatedContent = document.getElementById('contents-textarea').value.trim();
+    editButton.addEventListener("click", () => {
+        const updatedTitle = document.getElementById("title-textarea").value.trim();
+        const updatedContent = document.getElementById("contents-textarea").value.trim();
 
         if (updatedTitle === "" || updatedContent === "") {
             alert("제목과 내용을 모두 입력해주세요.");
@@ -60,9 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (post) {
             post.title = updatedTitle;
             post.content = updatedContent;
-            post.image = selectedImageData;
+            post.image = selectedImageData || post.image; // 새로운 이미지가 있으면 업데이트
 
-            localStorage.setItem('posts', JSON.stringify(posts));
+            localStorage.setItem("posts", JSON.stringify(posts));
 
             alert("게시글 수정이 완료되었습니다.");
 
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     title: updatedTitle,
                     content: updatedContent,
-                    image: selectedImageData
+                    image: selectedImageData || post.image
                 })
             })
             .then(response => {
@@ -94,23 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             */
 
-            window.location.href = '../detail/detail.html';
-        }
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const profileImage = document.getElementById('profile-image');
-    const dropdownMenu = document.getElementById('dropdown-menu');
-
-    profileImage.addEventListener('click', () => {
-        const isVisible = dropdownMenu.style.display === 'block';
-        dropdownMenu.style.display = isVisible ? 'none' : 'block';
-    });
-
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('.profile-list')) {
-            dropdownMenu.style.display = 'none';
+            window.location.href = "../detail/detail.html";
         }
     });
 });

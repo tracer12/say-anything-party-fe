@@ -1,5 +1,5 @@
 let currentPage = 1;
-const postsPerPage = 10
+const postsPerPage = 10;
 
 // 로그인 후 모든 게시글 정보를 불러오는 fetch useEffect 없이도 이게 맞나?
 // document.addEventListener("DOMContentLoaded", async function () {
@@ -26,10 +26,59 @@ const postsPerPage = 10
 //     }
 // });
 
+// 🌟 1. 헤더 파일을 동적으로 가져오고, 헤더 로드 후 프로필 드롭다운 이벤트 추가
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("../../header/header.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("header-container").innerHTML = data;
+            setupProfileDropdown(); // 헤더가 로드된 후 프로필 이벤트 리스너 추가
+        })
+        .catch(error => console.error("헤더 로드 실패:", error));
+});
+
+if (!document.querySelector("link[href*='header.css']")) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../header/header.css";
+    document.head.appendChild(link);
+}
+
+// 🌟 2. 프로필 드롭다운 이벤트 설정
+function setupProfileDropdown() {
+    const profileImage = document.getElementById('profile-image');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    if (!profileImage || !dropdownMenu) {
+        console.error("프로필 이미지 또는 드롭다운 메뉴를 찾을 수 없습니다.");
+        return;
+    }
+
+    const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
+    if (loginUser.profileImage) {
+        profileImage.style.backgroundImage = loginUser.profileImage;
+        profileImage.style.backgroundSize = 'cover';
+        profileImage.style.backgroundPosition = 'center';
+        profileImage.style.width = '30px';
+        profileImage.style.height = '30px';
+        profileImage.style.borderRadius = '50%';
+    }
+
+    profileImage.addEventListener('click', () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.profile-list')) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+}
+
+// 🌟 3. 게시글을 화면에 표시하는 함수
 function displayPosts() {
     const listContainer = document.querySelector('.list-container');
-
-    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
 
     const postsToShow = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
 
@@ -65,6 +114,7 @@ function displayPosts() {
     });
 }
 
+// 🌟 4. 무한 스크롤 처리
 function handleScroll() {
     const scrollable = document.documentElement.scrollHeight;
     const currentPosition = window.innerHeight + window.scrollY;
@@ -81,34 +131,8 @@ function handleScroll() {
     }
 }
 
+// 🌟 5. 페이지 로드 시 게시글 표시 및 스크롤 이벤트 추가
 document.addEventListener('DOMContentLoaded', () => {
     displayPosts();
     window.addEventListener('scroll', handleScroll);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const profileImage = document.getElementById('profile-image');
-    const dropdownMenu = document.getElementById('dropdown-menu');
-
-    const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
-    if (loginUser.profileImage) {
-        profileImage.style.backgroundImage = loginUser.profileImage;
-        profileImage.style.backgroundSize = 'cover'; // 이미지를 30px x 30px로 자르고 크기에 맞게 조정
-        profileImage.style.backgroundPosition = 'center'; // 이미지를 중앙에 위치시키기
-        profileImage.style.width = '30px';
-        profileImage.style.height = '30px';
-        profileImage.style.borderRadius = '50%'; // 둥근 모서리
-    }
-
-
-    profileImage.addEventListener('click', () => {
-        const isVisible = dropdownMenu.style.display === 'block';
-        dropdownMenu.style.display = isVisible ? 'none' : 'block';
-    });
-
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('.profile-list')) {
-            dropdownMenu.style.display = 'none';
-        }
-    });
 });

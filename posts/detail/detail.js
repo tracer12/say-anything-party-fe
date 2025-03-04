@@ -208,6 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 commentElement.querySelector('.comment-edit-button').addEventListener('click', () => {
+                    if (loginUser.id !== comment.writerId) {
+                        alert("해당 댓글을 수정할 권한이 없습니다.");
+                        return;
+                    }
                     const newContent = prompt("수정할 댓글을 입력하세요", comment.content);
                     if (newContent) {
                         comment.content = newContent;
@@ -230,6 +234,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 commentElement.querySelector('.comment-delete-button').addEventListener('click', () => {
+                    if (loginUser.id !== comment.writerId) {
+                        alert("해당 댓글을 삭제할 권한이 없습니다.");
+                        return;
+                    }
                     selectedItemForDeletion = comment;
                     commentModal.style.display = "flex";
 
@@ -252,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("해당 게시글을 수정할 권한이 없습니다.");
                 return;
             }
+
             localStorage.setItem('selectedPostId', selectedPostId);
             localStorage.setItem('selectedPostWriterId', selectedPostWriterId);
             window.location.href = '../edit/edit.html';
@@ -264,24 +273,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentModal.style.display = "none";
             });
         });
-
         const modalConfirmButton = document.querySelector('.modal-post-button-confirm');
         modalConfirmButton.addEventListener('click', () => {
             if (selectedItemForDeletion === post) {
                 const postIndex = posts.findIndex(p => p.id == selectedPostId);
                 if (postIndex !== -1) {
-                    posts.splice(postIndex, 1);
+                    posts.splice(postIndex, 1); // 게시글 삭제
+
+                    // 🆕 🔹 삭제 후 ID 재정렬 (1부터 순차적으로 부여)
+                    posts.forEach((post, index) => {
+                        post.id = index + 1; // id 값을 1부터 다시 설정
+                    });
+
                     localStorage.setItem('posts', JSON.stringify(posts));
                     alert("게시글이 삭제되었습니다.");
                 }
             }
 
-            // fetch(`https://example.com/api//posts/{postId}`, {
+            // fetch(`https://example.com/api/posts/{postId}`, {
             //     method: "DELETE",
             //     headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
             // })
-            //     .then(() => console.log("게시글 삭제 성공"))
-            //     .catch(error => console.error("게시글 삭제 중 오류 발생:", error.message));
+            // .then(() => console.log("게시글 삭제 성공"))
+            // .catch(error => console.error("게시글 삭제 중 오류 발생:", error.message));
 
             window.location.href = "../list/list.html";
 
