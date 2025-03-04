@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 헤더 가져오기
     fetch("../../header/header.html")
         .then(response => response.text())
         .then(data => {
             document.getElementById("header-container").innerHTML = data;
-            setupProfileDropdown(); // 프로필 드롭다운 활성화
-            updateProfileImage(); // 헤더 프로필 이미지 적용
+            setupProfileDropdown();
+            updateProfileImage();
         })
         .catch(error => console.error("헤더 로드 실패:", error));
 
@@ -56,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         profileIcon.style.backgroundImage = `url(${canvas.toDataURL()})`;
                         profileImageUploaded = true;
 
-                        // 헤더 프로필 이미지 업데이트
                         updateProfileImage(canvas.toDataURL());
                     };
                     img.src = e.target.result;
@@ -145,16 +143,30 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("users", JSON.stringify(users));
         localStorage.removeItem("loggedInUser");
 
-        // ✅ 회원 탈퇴 시 해당 유저가 작성한 게시글 삭제
         let posts = JSON.parse(localStorage.getItem("posts")) || [];
         posts = posts.filter(post => post.writerId !== loginUser.id);
         localStorage.setItem("posts", JSON.stringify(posts));
 
-        alert("회원 탈퇴가 완료되었습니다.");
-        window.location.href = "../../../login/login.html";
+        modal.style.display = "none";
+
+        const toastMessage = document.createElement('div');
+        toastMessage.textContent = "회원 탈퇴가 완료되었습니다.";
+        toastMessage.style.position = "fixed";
+        toastMessage.style.top = "83%";
+        toastMessage.style.left = "50%";
+        toastMessage.style.transform = "translateX(-50%)";
+        toastMessage.style.backgroundColor = "#ACA0EB";
+        toastMessage.style.color = "white";
+        toastMessage.style.padding = "10px 20px";
+        toastMessage.style.borderRadius = "5px";
+        document.body.appendChild(toastMessage);
+
+        setTimeout(() => {
+            document.body.removeChild(toastMessage);
+            window.location.href = "../../../login/login.html";
+        }, 3000);
     });
 
-    // ✅ 드롭다운 메뉴 설정
     function setupProfileDropdown() {
         const profileImage = document.getElementById("profile-image");
         const dropdownMenu = document.getElementById("dropdown-menu");
@@ -172,7 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ✅ 헤더 프로필 이미지 업데이트 함수
     function updateProfileImage(imageData = null) {
         const profileImage = document.getElementById("profile-image");
         const loginUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};

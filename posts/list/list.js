@@ -26,13 +26,12 @@ const postsPerPage = 10;
 //     }
 // });
 
-// 🌟 1. 헤더 파일을 동적으로 가져오고, 헤더 로드 후 프로필 드롭다운 이벤트 추가
 document.addEventListener("DOMContentLoaded", () => {
     fetch("../../header/header.html")
         .then(response => response.text())
         .then(data => {
             document.getElementById("header-container").innerHTML = data;
-            setupProfileDropdown(); // 헤더가 로드된 후 프로필 이벤트 리스너 추가
+            setupProfileDropdown();
         })
         .catch(error => console.error("헤더 로드 실패:", error));
 });
@@ -44,7 +43,6 @@ if (!document.querySelector("link[href*='header.css']")) {
     document.head.appendChild(link);
 }
 
-// 🌟 2. 프로필 드롭다운 이벤트 설정
 function setupProfileDropdown() {
     const profileImage = document.getElementById('profile-image');
     const dropdownMenu = document.getElementById('dropdown-menu');
@@ -75,7 +73,6 @@ function setupProfileDropdown() {
     });
 }
 
-// 🌟 3. 게시글을 화면에 표시하는 함수
 function displayPosts() {
     const listContainer = document.querySelector('.list-container');
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
@@ -114,7 +111,6 @@ function displayPosts() {
     });
 }
 
-// 🌟 4. 무한 스크롤 처리
 function handleScroll() {
     const scrollable = document.documentElement.scrollHeight;
     const currentPosition = window.innerHeight + window.scrollY;
@@ -131,7 +127,6 @@ function handleScroll() {
     }
 }
 
-// 🌟 5. 페이지 로드 시 게시글 표시 및 스크롤 이벤트 추가
 document.addEventListener('DOMContentLoaded', () => {
     displayPosts();
     window.addEventListener('scroll', handleScroll);

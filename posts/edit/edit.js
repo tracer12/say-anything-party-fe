@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 헤더 가져오기
     fetch("../../header/header.html")
         .then(response => response.text())
         .then(data => {
             document.getElementById("header-container").innerHTML = data;
-            setupProfileDropdown(); // 프로필 드롭다운 활성화
+            setupProfileDropdown();
         })
         .catch(error => console.error("헤더 로드 실패:", error));
 
@@ -29,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("contents-textarea").value = post.content;
     }
 
-    // 파일 선택 버튼 클릭 시 파일 업로드 창 띄우기
+
     fileSelectButton.addEventListener("click", () => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
@@ -61,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (post) {
             post.title = updatedTitle;
             post.content = updatedContent;
-            post.image = selectedImageData || post.image; // 새로운 이미지가 있으면 업데이트
+            post.image = selectedImageData || post.image;
 
             localStorage.setItem("posts", JSON.stringify(posts));
 

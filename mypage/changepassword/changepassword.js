@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 헤더 가져오기
     fetch("../../header/header.html")
         .then(response => response.text())
         .then(data => {
             document.getElementById("header-container").innerHTML = data;
-            setupProfileDropdown(); // 프로필 드롭다운 활성화
-            updateProfileImage(); // 프로필 이미지 적용
+            setupProfileDropdown();
+            updateProfileImage();
         })
         .catch(error => console.error("헤더 로드 실패:", error));
 
@@ -112,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ✅ 드롭다운 메뉴 설정
     function setupProfileDropdown() {
         const profileImage = document.getElementById("profile-image");
         const dropdownMenu = document.getElementById("dropdown-menu");
