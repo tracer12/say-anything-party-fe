@@ -1,5 +1,31 @@
 let currentPage = 1;
-const postsPerPage = 10;
+const postsPerPage = 10
+
+// 로그인 후 게시글 정보를 불러오는 fetch useEffect 없이도 이게 맞나?
+// document.addEventListener("DOMContentLoaded", async function () {
+//     const accessToken = localStorage.getItem("accessToken");
+
+//     if (!accessToken) {
+//         alert("로그인이 필요합니다.");
+//         window.location.href = "login.html";
+//         return;
+//     }
+
+//     try {
+//         const response = await fetch("https://example.com/api/posts", {
+//             method: "GET",
+//             headers: {
+//                 Authorization: `Bearer ${accessToken}`,
+//                 Accept: "application/json",
+//             },
+//         });
+
+//         const posts = await response.json();
+//         displayPosts(posts); // 게시글 displayPosts로 넘김김
+//     } catch (error) {
+//         console.error("게시글 가져오기 실패:", error.message);
+//     }
+// });
 
 function displayPosts() {
     const listContainer = document.querySelector('.list-container');

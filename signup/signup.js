@@ -5,145 +5,133 @@ document.addEventListener('DOMContentLoaded', () => {
     const nicknameInput = document.getElementById('nickname-input');
     const profileIcon = document.querySelector('.profile-icon');
     const signupButton = document.querySelector('.signup-button');
-    const emailHelperText = document.querySelector('.email-helper-text');
-    const passwordHelperText = document.querySelector('.password-helper-text');
-    const passwordCheckHelperText = document.querySelector('.password-check-helper-text');
-    const nicknameHelperText = document.querySelector('.nickname-helper-text');
-    const profileImage = document.querySelector('.profile-icon');
+
+    const helperTexts = {
+        email: document.querySelector('.email-helper-text'),
+        password: document.querySelector('.password-helper-text'),
+        passwordCheck: document.querySelector('.password-check-helper-text'),
+        nickname: document.querySelector('.nickname-helper-text'),
+    };
+
     let profileImageUploaded = false;
 
+    function setHelperText(element, message) {
+        element.textContent = message;
+        element.style.visibility = message ? "visible" : "hidden";
+    }
+
     emailInput.addEventListener('input', () => {
-        const emailValue = emailInput.value.trim();
+        const email = emailInput.value.trim();
+        if (!email) return setHelperText(helperTexts.email, "*이메일을 입력해주세요.");
+        if (!validateEmail(email)) return setHelperText(helperTexts.email, "*올바른 이메일 형식을 입력하세요.");
 
-        if (emailValue === "") {
-            emailHelperText.textContent = "*이메일을 입력해주세요.";
-            emailHelperText.style.visibility = "visible";
-        } else if (!validateEmail(emailValue)) {
-            emailHelperText.textContent = "*올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)";
-            emailHelperText.style.visibility = "visible";
-        } else {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const emailExists = users.some(user => user.email === emailValue);
-
-            if (emailExists) {
-                emailHelperText.textContent = "*중복된 이메일입니다.";
-                emailHelperText.style.visibility = "visible";
-            } else {
-                emailHelperText.style.visibility = "hidden";
-            }
-        }
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        setHelperText(helperTexts.email, users.some(user => user.email === email) ? "*중복된 이메일입니다." : "");
     });
+
     passwordInput.addEventListener('blur', () => {
-        const passwordValue = passwordInput.value.trim();
-        if (passwordValue === "") {
-            passwordHelperText.textContent = "*비밀번호를 입력해주세요.";
-            passwordHelperText.style.visibility = "visible";
-        } else if (!validatePassword(passwordValue)) {
-            passwordHelperText.textContent = "*비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자가 각각 최소 1개 포함해야 합니다.";
-            passwordHelperText.style.visibility = "visible";
-        } else {
-            passwordHelperText.style.visibility = "hidden";
-        }
+        const password = passwordInput.value.trim();
+        setHelperText(helperTexts.password,
+            !password ? "*비밀번호를 입력해주세요." :
+                !validatePassword(password) ? "*비밀번호는 8~20자, 대소문자, 숫자, 특수문자 포함해야 합니다." :
+                    ""
+        );
     });
 
     passwordInputCheck.addEventListener('blur', () => {
-        const passwordValue = passwordInput.value.trim();
-        const passwordCheckValue = passwordInputCheck.value.trim();
-        if (passwordCheckValue === "") {
-            passwordCheckHelperText.textContent = "*비밀번호 확인을 입력해주세요.";
-            passwordCheckHelperText.style.visibility = "visible";
-        } else if (passwordValue !== passwordCheckValue) {
-            passwordCheckHelperText.textContent = "*비밀번호 확인을 한 번 더 입력해주세요.";
-            passwordCheckHelperText.style.visibility = "visible";
-        } else {
-            passwordCheckHelperText.style.visibility = "hidden";
-        }
+        setHelperText(helperTexts.passwordCheck,
+            passwordInputCheck.value !== passwordInput.value ? "*비밀번호가 일치하지 않습니다." : ""
+        );
     });
 
     nicknameInput.addEventListener('blur', () => {
-        const nicknameValue = nicknameInput.value.trim();
-        if (nicknameValue === "") {
-            nicknameHelperText.textContent = "*닉네임을 입력해주세요.";
-            nicknameHelperText.style.visibility = "visible";
-        } else if (nicknameValue.length > 10) {
-            nicknameHelperText.textContent = "*닉네임은 최대 10자까지 작성 가능합니다.";
-            nicknameHelperText.style.visibility = "visible";
-        } else if (nicknameValue.includes(" ")) {
-            nicknameHelperText.textContent = "*띄어쓰기를 없애주세요.";
-            nicknameHelperText.style.visibility = "visible";
-        } else {
-            nicknameHelperText.style.visibility = "hidden";
-        }
+        const nickname = nicknameInput.value.trim();
+        setHelperText(helperTexts.nickname,
+            !nickname ? "*닉네임을 입력해주세요." :
+                nickname.length > 10 ? "*닉네임은 최대 10자까지 가능합니다." :
+                    nickname.includes(" ") ? "*띄어쓰기를 없애주세요." : ""
+        );
     });
 
     profileIcon.addEventListener('click', () => {
-        if (!profileImageUploaded) {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = 'image/*';
-            fileInput.click();
-
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        profileImage.style.backgroundImage = `url(${e.target.result})`;
-                        profileImageUploaded = true;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        } else {
-            profileImage.style.backgroundImage = '';
-            profileImageUploaded = false;
-        }
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                profileIcon.style.backgroundImage = `url(${reader.result})`;
+                profileImageUploaded = true;
+            };
+            reader.readAsDataURL(file);
+        });
+        fileInput.click();
     });
 
-
     function toggleSignupButton() {
-        const emailValid = emailInput.value && validateEmail(emailInput.value);
-        const passwordValid = passwordInput.value && validatePassword(passwordInput.value);
-        const passwordCheckValid = passwordInputCheck.value && passwordInput.value === passwordInputCheck.value;
-        const nicknameValid = nicknameInput.value && nicknameInput.value.length <= 10 && !nicknameInput.value.includes(" ");
-        const allValid = emailValid && passwordValid && passwordCheckValid && nicknameValid;
-
-        signupButton.disabled = !allValid;
-        signupButton.style.backgroundColor = allValid ? '#7F6AEE' : '#ACA0EB';
+        signupButton.disabled = !(
+            validateEmail(emailInput.value) &&
+            validatePassword(passwordInput.value) &&
+            passwordInput.value === passwordInputCheck.value &&
+            nicknameInput.value.trim().length > 0
+        );
     }
 
+    [emailInput, passwordInput, passwordInputCheck, nicknameInput].forEach(input =>
+        input.addEventListener('input', toggleSignupButton)
+    );
 
-    emailInput.addEventListener('input', toggleSignupButton);
-    passwordInput.addEventListener('input', toggleSignupButton);
-    passwordInputCheck.addEventListener('input', toggleSignupButton);
-    nicknameInput.addEventListener('input', toggleSignupButton);
     signupButton.addEventListener('click', () => {
         const users = JSON.parse(localStorage.getItem('users')) || [];
-
-        const newUser = {
+        users.push({
             id: users.length + 1,
             nickname: nicknameInput.value,
             email: emailInput.value,
             password: passwordInput.value,
-            profileImage: profileImageUploaded ? profileImage.style.backgroundImage : ''
-        };
-
-        users.push(newUser);
-
+            profileImage: profileImageUploaded ? profileIcon.style.backgroundImage : ''
+        });
         localStorage.setItem('users', JSON.stringify(users));
-
         alert('회원가입 완료!');
+
+        // 회원가입 API 요청 (fetch)
+        /*
+        fetch("https://example.com/api/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: emailInput.value,
+                password: passwordInput.value,
+                passwordCheck: passwordInputCheck.value,
+                nickname: nicknameInput.value,
+                profileImage: profileImageUploaded ? profileIcon.style.backgroundImage : null
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`회원가입 실패: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("회원가입 성공:", data);
+        })
+        .catch(error => {
+            console.error("회원가입 중 오류 발생:", error.message);
+        });
+        */
+
         window.location.href = '../login/login.html';
     });
-    toggleSignupButton();
 });
 
 function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function validatePassword(password) {
-    const re = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
-    return re.test(password);
+    return /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(password);
 }

@@ -36,6 +36,34 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('posts', JSON.stringify(posts));
 
             alert("게시글 수정이 완료되었습니다.");
+
+            // 게시글 수정 API 요청 (fetch)
+            /*
+            fetch(`https://example.com/api/posts/{postsId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                },
+                body: JSON.stringify({
+                    title: updatedTitle,
+                    content: updatedContent
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`게시글 수정 실패: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("게시글 수정 성공:", data);
+            })
+            .catch(error => {
+                console.error("게시글 수정 중 오류 발생:", error.message);
+            });
+            */
+
             window.location.href = '../detail/detail.html';
         }
     });
@@ -56,6 +84,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-
-

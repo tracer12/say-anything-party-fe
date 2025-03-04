@@ -17,17 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
         profileImage.style.borderRadius = '50%'; // 둥근 모서리
     }
 
-
     profileImage.addEventListener('click', () => {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
-
 
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.profile-list')) {
             dropdownMenu.style.display = 'none';
         }
     });
+
     function validatePassword(password) {
         const re = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
         return re.test(password);
@@ -77,14 +76,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const users = JSON.parse(localStorage.getItem('users')) || [];
 
-
-            const userIndex = users.findIndex(u => u.email === user.email);
+            const userIndex = users.findIndex(u => u.email === loginUser.email);
             if (userIndex !== -1) {
                 users[userIndex].password = passwordValue;
 
                 localStorage.setItem('users', JSON.stringify(users));
 
                 alert("비밀번호 수정이 완료되었습니다.");
+
+                /* 비밀번호 변경 fetch
+                fetch("https://example.com/api/users/{userId}/password", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                    },
+                    body: JSON.stringify({
+                        email: loginUser.email,
+                        newPassword: passwordValue
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`비밀번호 변경 실패: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("비밀번호 변경 성공:", data);
+                })
+                .catch(error => {
+                    console.error("비밀번호 변경 중 오류 발생:", error.message);
+                });
+                */
+
                 window.location.href = "../../login/login.html";
             } else {
                 console.error('해당 이메일의 사용자가 없습니다.');

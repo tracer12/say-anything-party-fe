@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
         profileImage.style.borderRadius = '50%'; // 둥근 모서리
     }
 
-
     profileImage.addEventListener('click', () => {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
@@ -51,12 +50,38 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const posts = JSON.parse(localStorage.getItem('posts')) || [];
-
         posts.push(newPost);
-
         localStorage.setItem('posts', JSON.stringify(posts));
 
         alert('게시글이 작성되었습니다!');
+
+        /*
+        fetch("https://example.com/api/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+            },
+            body: JSON.stringify({
+                title: title,
+                content: content,
+                writerId: loggedInUser.id,
+                date: currentDate
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`게시글 작성 실패: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("게시글 작성 성공:", data);
+        })
+        .catch(error => {
+            console.error("게시글 작성 중 오류 발생:", error.message);
+        });
+        */
 
         titleTextarea.value = '';
         contentsTextarea.value = '';

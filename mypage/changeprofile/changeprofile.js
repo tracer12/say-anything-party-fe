@@ -27,18 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
         profileIcon.style.backgroundImage = loginUser.profileImage;
     }
 
-
     profileImage.addEventListener('click', () => {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
     });
-
 
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.profile-list')) {
             dropdownMenu.style.display = 'none';
         }
     });
-
 
     profileIcon.addEventListener('click', () => {
         const fileInput = document.createElement('input');
@@ -53,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.onload = function (e) {
                     const img = new Image();
                     img.onload = function () {
-
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         const size = 160;
@@ -62,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctx.drawImage(img, 0, 0, size, size);
                         profileIcon.style.backgroundImage = `url(${canvas.toDataURL()})`;
                         profileImageUploaded = true;
-
 
                         profileImage.style.backgroundImage = `url(${canvas.toDataURL()})`;
                         profileImage.style.backgroundSize = 'cover';
@@ -77,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
     nicknameInput.addEventListener('blur', () => {
         const nicknameValue = nicknameInput.value.trim();
         if (nicknameValue === "") {
@@ -108,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             const users = JSON.parse(localStorage.getItem('users')) || [];
 
-            const userIndex = users.findIndex(user => user.email === user.email);
+            const userIndex = users.findIndex(user => user.email === loginUser.email);
             if (userIndex !== -1) {
                 users[userIndex].nickname = nicknameValue;
 
@@ -127,16 +123,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
 
-                const profileImageUrl = loggedInUser.profileImage;
-                const headerProfileImage = document.getElementById('profile-image');
-                if (profileImageUrl) {
-                    headerProfileImage.style.backgroundImage = profileImageUrl;
-                    headerProfileImage.style.backgroundSize = 'cover';
-                    headerProfileImage.style.backgroundPosition = 'center';
-                    headerProfileImage.style.width = '30px';
-                    headerProfileImage.style.height = '30px';
-                    headerProfileImage.style.borderRadius = '50%';
-                }
+                // 프로필 업데이트 API 요청 (fetch)
+                /*
+                fetch("https://example.com/api/users/{userId}/profile", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                    },
+                    body: JSON.stringify({
+                        email: loginUser.email,
+                        nickname: nicknameValue,
+                        profileImage: profileImageUploaded ? profileIcon.style.backgroundImage : null
+                    })
+                })
+                .then(response => response.json())
+                .then(data => console.log("프로필 업데이트 성공:", data))
+                .catch(error => console.error("프로필 업데이트 중 오류 발생:", error.message));
+                */
 
                 const toastMessage = document.createElement('div');
                 toastMessage.textContent = "수정 완료";
@@ -159,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
     deleteProfileButton.addEventListener('click', () => {
         modal.style.display = "flex";
     });
@@ -167,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelButton.addEventListener('click', () => {
         modal.style.display = "none";
     });
-
 
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -180,6 +182,19 @@ document.addEventListener('DOMContentLoaded', () => {
         users = users.filter(u => u.email !== loginUser.email);
         localStorage.setItem('users', JSON.stringify(users));
         localStorage.removeItem('loggedInUser');
+
+        // 회원 탈퇴 API 요청 (fetch)
+        /*
+        fetch(`https://example.com/api/users/{userId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+            }
+        })
+        .then(() => console.log("회원 탈퇴 성공"))
+        .catch(error => console.error("회원 탈퇴 중 오류 발생:", error.message));
+        */
+
         alert("회원 탈퇴가 완료되었습니다.");
         window.location.href = "../../../login/login.html";
     });

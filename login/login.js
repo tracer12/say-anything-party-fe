@@ -55,6 +55,38 @@ document.addEventListener("DOMContentLoaded", function () {
             passwordHelper.textContent = "*사용자 데이터를 로드할 수 없습니다. 다시 시도해주세요.";
             passwordHelper.classList.add('visible');
         }
+
+        /* 로그인 요청 api
+        fetch("https://example.com/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: emailValue,
+                password: passwordValue
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`로그인 실패: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            localStorage.setItem('accessToken', data.accessToken);
+            localStorage.setItem('refreshToken', data.refreshToken);
+            localStorage.setItem('loggedInUser', JSON.stringify(data.user));
+
+            alert("로그인 성공!");
+            window.location.href = "../posts/list/list.html";
+        })
+        .catch(error => {
+            console.error("로그인 요청 중 오류 발생:", error.message);
+            passwordHelper.textContent = "*아이디 또는 비밀번호를 확인해주세요";
+            passwordHelper.classList.add('visible');
+        });
+        */
     });
 
     function validateEmail(email) {

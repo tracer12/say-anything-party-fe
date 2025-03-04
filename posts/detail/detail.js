@@ -146,6 +146,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateCommentsList();
                 document.querySelector('.comment-input').value = '';
             }
+
+            /* 댓글 입력 fetch
+               fetch(`https://example.com/api/posts/${selectedPostId}/comments`, {
+                   method: "POST",
+                   headers: {
+                       "Content-Type": "application/json",
+                       Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                   },
+                   body: JSON.stringify({
+                       content: commentContent,
+                       writerId: loginUser.id
+                   })
+               })
+               .then(response => response.json())
+               .then(data => console.log("댓글 등록 성공:", data))
+               .catch(error => console.error("댓글 등록 중 오류 발생:", error.message));
+               */
         });
 
         function updateCommentsList() {
@@ -193,11 +210,33 @@ document.addEventListener('DOMContentLoaded', () => {
                         localStorage.setItem('posts', JSON.stringify(posts));
                         updateCommentsList();
                     }
+                    /* 댓글 수정 api
+                      fetch(`https://example.com/api/posts/{postId}/comments/{commentId}`, {
+                          method: "PUT",
+                          headers: {
+                              "Content-Type": "application/json",
+                              Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                          },
+                          body: JSON.stringify({ content: newContent })
+                      })
+                      .then(response => response.json())
+                      .then(data => console.log("댓글 수정 성공:", data))
+                      .catch(error => console.error("댓글 수정 중 오류 발생:", error.message));
+                      */
                 });
 
                 commentElement.querySelector('.comment-delete-button').addEventListener('click', () => {
                     selectedItemForDeletion = comment;
                     commentModal.style.display = "flex";
+
+
+                    // fetch(`https://example.com/api/posts/{postId}/comments/{commentId}`, {
+                    //     method: "DELETE",
+                    //     headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
+                    // })
+                    //     .then(() => console.log("댓글 삭제 성공"))
+                    //     .catch(error => console.error("댓글 삭제 중 오류 발생:", error.message));
+
                 });
             });
         }
@@ -228,6 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert("게시글이 삭제되었습니다.");
                 }
             }
+
+            // fetch(`https://example.com/api//posts/{postId}`, {
+            //     method: "DELETE",
+            //     headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
+            // })
+            //     .then(() => console.log("게시글 삭제 성공"))
+            //     .catch(error => console.error("게시글 삭제 중 오류 발생:", error.message));
 
             window.location.href = "../list/list.html";
 
