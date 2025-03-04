@@ -2,9 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedPostId = localStorage.getItem('selectedPostId');
     const profileImage = document.getElementById('profile-image');
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
-
+    const fileSelectButton = document.querySelector('.file-select-button');
+    const fileSelectText = document.querySelector('.file-select-text');
     const post = posts.find(post => post.id == selectedPostId);
     const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
+
+    let selectedImageData = null;
 
     if (loginUser.profileImage) {
         profileImage.style.backgroundImage = loginUser.profileImage;
@@ -15,10 +18,30 @@ document.addEventListener('DOMContentLoaded', () => {
         profileImage.style.borderRadius = '50%'; // 둥근 모서리
     }
 
-    if (post) {
+    if (post) { // 기존 제목과 내용 가져오기
         document.getElementById('title-textarea').value = post.title;
         document.getElementById('contents-textarea').value = post.content;
     }
+
+    fileSelectButton.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.click();
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    selectedImageData = e.target.result;
+                    fileSelectText.textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+
 
     document.querySelector('.edit-button').addEventListener('click', () => {
         const updatedTitle = document.getElementById('title-textarea').value.trim();
@@ -32,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (post) {
             post.title = updatedTitle;
             post.content = updatedContent;
+            post.image = selectedImageData;
 
             localStorage.setItem('posts', JSON.stringify(posts));
 

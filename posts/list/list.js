@@ -1,7 +1,7 @@
 let currentPage = 1;
 const postsPerPage = 10
 
-// 로그인 후 게시글 정보를 불러오는 fetch useEffect 없이도 이게 맞나?
+// 로그인 후 모든 게시글 정보를 불러오는 fetch useEffect 없이도 이게 맞나?
 // document.addEventListener("DOMContentLoaded", async function () {
 //     const accessToken = localStorage.getItem("accessToken");
 
@@ -15,7 +15,6 @@ const postsPerPage = 10
 //         const response = await fetch("https://example.com/api/posts", {
 //             method: "GET",
 //             headers: {
-//                 Authorization: `Bearer ${accessToken}`,
 //                 Accept: "application/json",
 //             },
 //         });
@@ -84,7 +83,6 @@ function handleScroll() {
 
 document.addEventListener('DOMContentLoaded', () => {
     displayPosts();
-
     window.addEventListener('scroll', handleScroll);
 });
 

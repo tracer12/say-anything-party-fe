@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const writer = users.find(user => user.id == selectedPostWriterId);
     let selectedItemForDeletion = null;
 
-    if (post && writer) {
+    if (post && writer) { // 댓글 입력창 까지 내용
         const detailContainer = document.querySelector('.detail-container');
 
         detailContainer.innerHTML = `
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <hr class="detail-horizen">
-            <img src="../../sample/sampleimage/samplegray.png" class="post-image" alt="Post Image" />
+            <img src="${post.image ? post.image : '../../sample/sampleimage/samplegray.png'}" class="post-image" alt="Post Image" />
 
             <p class="post-content">${post.content}</p>
 
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             profileImage.innerHTML = `<div class="default-profile"></div>`;
         }
 
-        const postModal = document.createElement('div');
+        const postModal = document.createElement('div'); // 게시글 삭제모달
         postModal.classList.add('modal-post');
         postModal.style.display = 'none';
         postModal.innerHTML = `
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         detailContainer.appendChild(postModal);
 
-        const commentModal = document.createElement('div');
+        const commentModal = document.createElement('div'); // 댓글 삭제모달
         commentModal.classList.add('modal-comment');
         commentModal.style.display = 'none';
         commentModal.innerHTML = `
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         detailContainer.appendChild(commentModal);
 
-        const writerProfileImage = document.getElementById('writer-profile-image');
+        const writerProfileImage = document.getElementById('writer-profile-image'); // 게시글 쓴 사람의 프로필 이미지
         if (writer.profileImage) {
             writerProfileImage.style.backgroundImage = writer.profileImage;
             writerProfileImage.style.backgroundSize = 'cover';
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: post.comments.length + 1,
                     content: commentContent,
                     date: new Date().toISOString(),
-                    writerId: selectedPostWriterId,
+                    writerId: loginUser.id,
                 };
                 post.comments.push(newComment);
                 localStorage.setItem('posts', JSON.stringify(posts));
