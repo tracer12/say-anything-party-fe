@@ -116,6 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const postDeleteButton = detailContainer.querySelector('.post-delete-button');
         postDeleteButton.addEventListener('click', () => {
+            if (loginUser.id !== post.writerId) {
+                alert("해당 게시글을 삭제할 권한이 없습니다.");
+                return;
+            }
             selectedItemForDeletion = post;
             postModal.style.display = "flex";
         });
@@ -244,6 +248,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCommentsList();
 
         document.querySelector('.post-edit-button').addEventListener('click', () => {
+            if (loginUser.id !== post.writerId) {
+                alert("해당 게시글을 수정할 권한이 없습니다.");
+                return;
+            }
             localStorage.setItem('selectedPostId', selectedPostId);
             localStorage.setItem('selectedPostWriterId', selectedPostWriterId);
             window.location.href = '../edit/edit.html';

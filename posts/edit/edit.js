@@ -22,17 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (post) { // 기존 제목과 내용 가져오기
         document.getElementById('title-textarea').value = post.title;
         document.getElementById('contents-textarea').value = post.content;
-
-        // 로그인한 사용자가 작성자가 아닐 경우 수정 비활성화
-        if (loginUser.id !== post.writerId) {
-            editButton.disabled = true; // 버튼 비활성화
-            editButton.style.backgroundColor = "#ccc"; // 스타일 변경 (비활성화 느낌)
-            editButton.style.cursor = "not-allowed";
-            editButton.addEventListener("click", (event) => {
-                event.preventDefault();
-                alert("해당 게시글을 수정할 권한이 없습니다.");
-            });
-        }
     }
 
     fileSelectButton.addEventListener('click', () => {
@@ -55,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     editButton.addEventListener('click', () => {
-        // 작성자가 아닌 경우 실행 방지
         if (loginUser.id !== post.writerId) {
+            alert("해당 게시글을 삭제할 권한이 없습니다.");
             return;
         }
 
