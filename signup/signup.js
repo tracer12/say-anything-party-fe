@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nicknameInput = document.getElementById('nickname-input');
     const profileIcon = document.querySelector('.profile-icon');
     const signupButton = document.querySelector('.signup-button');
-    let profileImageUploaded = false;
+    let selectedImageFile = null; // 🔹 선택된 이미지 파일을 저장할 변수
 
     const helperTexts = {
         email: document.querySelector('.email-helper-text'),
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordCheck: document.querySelector('.password-check-helper-text'),
         nickname: document.querySelector('.nickname-helper-text'),
     };
-
 
     function setHelperText(element, message) {
         element.textContent = message;
@@ -61,7 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
+
             if (file) {
+                selectedImageFile = file; // ✅ 선택한 파일을 전역 변수에 저장
+
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     const img = new Image();
@@ -73,18 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         canvas.height = size;
                         ctx.drawImage(img, 0, 0, size, size);
                         profileIcon.style.backgroundImage = `url(${canvas.toDataURL()})`;
-                        profileImageUploaded = true;
-
-                        profileImage.style.backgroundImage = `url(${canvas.toDataURL()})`;
-                        profileImage.style.backgroundSize = 'cover';
-                        profileImage.style.backgroundPosition = 'center';
-                        profileImage.style.width = '30px';
-                        profileImage.style.height = '30px';
-                        profileImage.style.borderRadius = '50%';
                     };
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
+            } else {
+                console.log("🚨 파일이 선택되지 않음");
             }
         });
     });
@@ -102,48 +98,37 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('input', toggleSignupButton)
     );
 
-    signupButton.addEventListener('click', () => {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        users.push({
-            id: users.length + 1,
-            nickname: nicknameInput.value,
-            email: emailInput.value,
-            password: passwordInput.value,
-            profileImage: profileImageUploaded ? profileIcon.style.backgroundImage : ''
-        });
-        localStorage.setItem('users', JSON.stringify(users));
-        alert('회원가입 완료!');
+    signupButton.addEventListener('click', async () => {
 
-        // 회원가입 API 요청 (fetch)
-        /*
-        fetch("https://example.com/api/users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: emailInput.value,
-                password: passwordInput.value,
-                passwordCheck: passwordInputCheck.value,
-                nickname: nicknameInput.value,
-                profileImage: profileImageUploaded ? profileIcon.style.backgroundImage : null
-            })
-        })
-        .then(response => {
+        const formData = new FormData();
+        formData.append("email", emailInput.value);
+        formData.append("password", passwordInput.value);
+        formData.append("passwordCheck", passwordInputCheck.value);
+        formData.append("nickname", nicknameInput.value);
+
+        if (selectedImageFile) {
+            formData.append("profile_image", selectedImageFile); // ✅ 선택한 파일 추가
+        } else {
+            console.log("🚨 선택한 프로필 이미지 없음");
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/users", {
+                method: "POST",
+                body: formData,
+            });
+
             if (!response.ok) {
                 throw new Error(`회원가입 실패: ${response.status}`);
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log("회원가입 성공:", data);
-        })
-        .catch(error => {
-            console.error("회원가입 중 오류 발생:", error.message);
-        });
-        */
 
-        window.location.href = '../login/login.html';
+            const data = await response.json();
+            alert("회원가입이 완료되었습니다!");
+            window.location.href = '../login/login.html';
+        } catch (error) {
+            console.error("❌ 회원가입 중 오류 발생:", error.message);
+            alert("회원가입 실패: " + error.message);
+        }
     });
 });
 

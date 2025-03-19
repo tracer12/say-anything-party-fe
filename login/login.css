@@ -88,11 +88,11 @@ body {
 .helper-message {
     color: red;
     font-size: 0.9em;
-    visibility: hidden;
+    display: none;
 }
 
 .helper-message.visible {
-    visibility: visible;
+    display: block;
 }
 
 .login-button {

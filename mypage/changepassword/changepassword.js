@@ -4,24 +4,50 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             document.getElementById("header-container").innerHTML = data;
             setupProfileDropdown();
-            updateProfileImage();
         })
         .catch(error => console.error("헤더 로드 실패:", error));
+});
 
-    if (!document.querySelector("link[href*='header.css']")) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "../../header/header.css";
-        document.head.appendChild(link);
+if (!document.querySelector("link[href*='header.css']")) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../header/header.css";
+    document.head.appendChild(link);
+}
+
+function setupProfileDropdown() {
+    const profileImage = document.getElementById("profile-image");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    if (!profileImage || !dropdownMenu) return;
+
+    profileImage.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".profile-list")) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+
+    const profileIcon = localStorage.getItem('profileImage') || "";
+    if (profileIcon) {
+        profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
+        profileImage.style.backgroundSize = 'cover';
+        profileImage.style.backgroundPosition = 'center';
+        profileImage.style.width = '30px';
+        profileImage.style.height = '30px';
+        profileImage.style.borderRadius = '50%';
     }
+}
 
+document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("password-input");
     const passwordInputCheck = document.getElementById("password-input-check");
     const changepasswordButton = document.querySelector(".changepassword-button");
     const passwordHelperText = document.querySelector(".changepassword-helper-text");
     const passwordCheckHelperText = document.querySelector(".changepassword-check-helper-text");
-
-    const loginUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
 
     function validatePassword(password) {
         const re = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
@@ -55,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    changepasswordButton.addEventListener("click", () => {
+    changepasswordButton.addEventListener("click", async () => {
         const passwordValue = passwordInput.value.trim();
         const passwordCheckValue = passwordInputCheck.value.trim();
 
@@ -69,62 +95,47 @@ document.addEventListener("DOMContentLoaded", () => {
             passwordCheckHelperText.textContent = "*비밀번호 확인을 한 번 더 입력해주세요.";
             passwordCheckHelperText.style.visibility = "visible";
         } else {
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-            const userIndex = users.findIndex(u => u.email === loginUser.email);
-
-            if (userIndex !== -1) {
-                users[userIndex].password = passwordValue;
-                localStorage.setItem("users", JSON.stringify(users));
-
-                alert("비밀번호 수정이 완료되었습니다.");
-
-                /* 비밀번호 변경 fetch
-                fetch("https://example.com/api/users/{userId}/password", {
-                    method: "PUT",
+            try {
+                const response = await fetch("http://localhost:8080/users/password", {
+                    method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                        "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
                     },
                     body: JSON.stringify({
-                        email: loginUser.email,
-                        newPassword: passwordValue
+                        password: passwordValue,
+                        passwordCheck: passwordCheckValue
                     })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`비밀번호 변경 실패: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("비밀번호 변경 성공:", data);
-                })
-                .catch(error => {
-                    console.error("비밀번호 변경 중 오류 발생:", error.message);
                 });
-                */
 
-                window.location.href = "../../login/login.html";
-            } else {
-                console.error("해당 이메일의 사용자가 없습니다.");
+                if (!response.ok) {
+                    throw new Error("비밀번호 변경 실패");
+                }
+
+                // ✅ 성공 메시지 표시 (토스트 메시지)
+                const toastMessage = document.createElement("div");
+                toastMessage.textContent = "비밀번호가 변경되었습니다.";
+                toastMessage.style.position = "fixed";
+                toastMessage.style.top = "83%";
+                toastMessage.style.left = "50%";
+                toastMessage.style.transform = "translateX(-50%)";
+                toastMessage.style.backgroundColor = "#ACA0EB";
+                toastMessage.style.color = "white";
+                toastMessage.style.padding = "10px 20px";
+                toastMessage.style.borderRadius = "5px";
+                document.body.appendChild(toastMessage);
+
+                setTimeout(() => {
+                    document.body.removeChild(toastMessage);
+                    window.location.href = "../../login/login.html";
+                }, 3000);
+
+            } catch (error) {
+                alert("비밀번호 변경 중 오류가 발생했습니다.");
+                console.error("비밀번호 변경 오류:", error);
             }
         }
     });
 
-    function setupProfileDropdown() {
-        const profileImage = document.getElementById("profile-image");
-        const dropdownMenu = document.getElementById("dropdown-menu");
 
-        if (!profileImage || !dropdownMenu) return;
-
-        profileImage.addEventListener("click", () => {
-            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
-        });
-
-        document.addEventListener("click", (event) => {
-            if (!event.target.closest(".profile-list")) {
-                dropdownMenu.style.display = "none";
-            }
-        });
-    }
 });

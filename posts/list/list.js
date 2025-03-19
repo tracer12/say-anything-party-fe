@@ -2,30 +2,48 @@
     let currentPage = 1;
     const postsPerPage = 10;
 
-    // 로그인 후 모든 게시글 정보를 불러오는 fetch useEffect 없이도 이게 맞나?
-    // document.addEventListener("DOMContentLoaded", async function () {
-    //     const accessToken = localStorage.getItem("accessToken");
+    document.addEventListener("DOMContentLoaded", async function () {
+        const accessToken = localStorage.getItem("accessToken");
 
-    //     if (!accessToken) {
-    //         alert("로그인이 필요합니다.");
-    //         window.location.href = "login.html";
-    //         return;
-    //     }
+        if (!accessToken) {
+            alert("로그인이 필요합니다.");
+            window.location.href = "login.html";
+            return;
+        }
 
-    //     try {
-    //         const response = await fetch("https://example.com/api/posts", {
-    //             method: "GET",
-    //             headers: {
-    //                 Accept: "application/json",
-    //             },
-    //         });
+        try {
+            // Fetch로 게시글 데이터 가져오기
+            const response = await fetch("http://localhost:8080/posts", {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${accessToken}`, // 서버에 토큰을 넘겨서 인증을 받도록 함
+                },
+            });
 
-    //         const posts = await response.json();
-    //         displayPosts(posts); // 게시글 displayPosts로 넘김김
-    //     } catch (error) {
-    //         console.error("게시글 가져오기 실패:", error.message);
-    //     }
-    // });
+            if (!response.ok) {
+                throw new Error('게시글을 가져오는 데 실패했습니다.');
+            }
+
+            const posts = await response.json();
+            console.log(posts);
+            displayPosts(posts); // 게시글 displayPosts로 넘김
+        } catch (error) {
+            console.error("게시글 가져오기 실패:", error.message);
+        }
+    });
+
+    function formattedDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        });
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
         fetch("../../header/header.html")
@@ -53,9 +71,9 @@
             return;
         }
 
-        const loginUser = JSON.parse(localStorage.getItem('loggedInUser')) || {};
-        if (loginUser.profileImage) {
-            profileImage.style.backgroundImage = loginUser.profileImage;
+        const profileIcon = localStorage.getItem('profileImage') || "";
+        if (profileIcon) {
+            profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
             profileImage.style.backgroundSize = 'cover';
             profileImage.style.backgroundPosition = 'center';
             profileImage.style.width = '30px';
@@ -74,18 +92,16 @@
         });
     }
 
-    function displayPosts() {
+    // 게시글을 화면에 표시하는 함수
+    function displayPosts(posts) {
         const listContainer = document.querySelector('.list-container');
-        const posts = JSON.parse(localStorage.getItem('posts')) || [];
 
         const postsToShow = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
 
         postsToShow.forEach(post => {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(user => user.id === post.writerId);
-
             const postElement = document.createElement('article');
             postElement.classList.add('post');
+            const postCreateDate = formattedDate(post.createDate);
 
             postElement.innerHTML = `
                 <div class="post-card-container">
@@ -94,24 +110,46 @@
                         <p class="post-info">
                             <span>좋아요 ${post.likes}</span>
                             <span>조회수 ${post.views}</span>  
-                            <span>댓글 수 ${post.comments.length}</span> 
+                            <span>댓글 수 ${post.comments}</span> 
                         </p>
-                        <p class="post-date">${post.date}</p>
+                        <p class="post-date">${postCreateDate}</p>
                     </div>
                     <hr class="post-card-line"/>
-                    <p class="post-author">${user ? user.nickname : '작성자 없음'}</p>
+                    <div class="author-info">
+                        <div class="author-profile">
+                            <div class="writer-profile-image" id="writer-profile-image"></div>
+                        </div>
+                        <p class="post-author">${post.nickname}</p>
+                    </div>
                 </div>
             `;
 
+            console.log(post.profileImage);
+
+            // ✅ id가 아니라 class로 선택 (postElement 내부에서만 찾도록)
+            const writerProfileImage = postElement.querySelector('.writer-profile-image');
+
+            if (post.profileImage) {
+                writerProfileImage.style.backgroundImage = `url(http://localhost:8080${post.profileImage})`;
+                writerProfileImage.style.backgroundSize = 'cover';
+                writerProfileImage.style.backgroundPosition = 'center';
+                writerProfileImage.style.width = '30px';
+                writerProfileImage.style.height = '30px';
+                writerProfileImage.style.borderRadius = '50%';
+            } else {
+                writerProfileImage.innerHTML = `<div class="default-profile"></div>`;
+            }
+
             listContainer.appendChild(postElement);
+
             postElement.addEventListener('click', () => {
-                localStorage.setItem('selectedPostId', post.id);
-                localStorage.setItem('selectedPostWriterId', post.writerId);
+                localStorage.setItem('selectedPostId', post.pid);
                 window.location.href = '../../posts/detail/detail.html';
             });
         });
     }
 
+    // 스크롤 시 게시글을 더 로드하는 함수
     function handleScroll() {
         const scrollable = document.documentElement.scrollHeight;
         const currentPosition = window.innerHeight + window.scrollY;
@@ -124,12 +162,11 @@
             }
 
             currentPage++;
-            displayPosts();
+            displayPosts(posts); // 서버에서 받아온 게시글로 갱신
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        displayPosts();
         window.addEventListener('scroll', handleScroll);
     });
 

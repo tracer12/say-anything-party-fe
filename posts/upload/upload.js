@@ -6,13 +6,43 @@ document.addEventListener("DOMContentLoaded", () => {
             setupProfileDropdown();
         })
         .catch(error => console.error("헤더 로드 실패:", error));
+});
 
-    if (!document.querySelector("link[href*='header.css']")) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "../../header/header.css";
-        document.head.appendChild(link);
+if (!document.querySelector("link[href*='header.css']")) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../header/header.css";
+    document.head.appendChild(link);
+}
+
+function setupProfileDropdown() {
+    const profileImage = document.getElementById("profile-image");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    if (!profileImage || !dropdownMenu) return;
+
+    profileImage.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".profile-list")) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+
+    const profileIcon = localStorage.getItem('profileImage') || "";
+    if (profileIcon) {
+        profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
+        profileImage.style.backgroundSize = 'cover';
+        profileImage.style.backgroundPosition = 'center';
+        profileImage.style.width = '30px';
+        profileImage.style.height = '30px';
+        profileImage.style.borderRadius = '50%';
     }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
 
     const titleTextarea = document.getElementById("title-textarea");
     const contentsTextarea = document.getElementById("contents-textarea");
@@ -20,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileSelectButton = document.querySelector(".file-select-button");
     const fileSelectText = document.querySelector(".file-select-text");
 
-    let selectedImageData = null;
+    let selectedImageFile = null; // ✅ 선택한 파일 저장
 
     // 파일 선택 버튼 클릭 시 파일 업로드 창 띄우기
     fileSelectButton.addEventListener("click", () => {
@@ -32,99 +62,60 @@ document.addEventListener("DOMContentLoaded", () => {
         fileInput.addEventListener("change", (event) => {
             const file = event.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    selectedImageData = e.target.result;
-                    fileSelectText.textContent = file.name;
-                };
-                reader.readAsDataURL(file);
+                selectedImageFile = file; // ✅ 선택한 파일 저장
+                fileSelectText.textContent = file.name;
             }
         });
     });
 
-    uploadButton.addEventListener("click", () => {
+    uploadButton.addEventListener("click", async () => {
         const title = titleTextarea.value.trim();
         const content = contentsTextarea.value.trim();
-        const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
-        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-
+        const accessToken = localStorage.getItem("accessToken");
         if (!title || !content) {
             alert("제목과 내용을 입력해주세요.");
             return;
         }
 
-        const posts = JSON.parse(localStorage.getItem("posts")) || [];
-        const newPost = {
-            id: posts.length + 1,
-            title: title,
-            content: content,
-            image: selectedImageData,
-            comments: [],
-            likes: 0,
-            views: 0,
-            date: currentDate,
-            writerId: loggedInUser.id
-        };
+        if (!accessToken) {
+            alert("로그인이 필요합니다.");
+            window.location.href = "../login/login.html";
+            return;
+        }
 
-        posts.push(newPost);
-        localStorage.setItem("posts", JSON.stringify(posts));
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        if (selectedImageFile) {
+            formData.append("postImage", selectedImageFile); // ✅ 선택한 파일 추가
+        }
 
-        alert("게시글이 작성되었습니다!");
+        try {
+            const response = await fetch("http://localhost:8080/posts", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${accessToken}`, // ✅ 토큰 추가
+                },
+                body: formData, // ✅ JSON이 아닌 form-data로 전송
+            });
 
-        /*
-        fetch("https://example.com/api/posts", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-            },
-            body: JSON.stringify(newPost)
-        })
-        .then(response => {
             if (!response.ok) {
                 throw new Error(`게시글 작성 실패: ${response.status}`);
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log("게시글 작성 성공:", data);
-        })
-        .catch(error => {
-            console.error("게시글 작성 중 오류 발생:", error.message);
-        });
-        */
 
-        window.location.href = "../list/list.html";
+            const data = await response.json();
+            console.log("게시글 작성 성공:", data);
+            alert("게시글이 성공적으로 작성되었습니다!");
+            window.location.href = "../list/list.html"; // ✅ 업로드 후 목록 페이지로 이동
+        } catch (error) {
+            console.error("게시글 작성 중 오류 발생:", error.message);
+            alert("게시글 작성에 실패했습니다. 다시 시도해주세요.");
+        }
+
         titleTextarea.value = "";
         contentsTextarea.value = "";
         fileSelectText.textContent = "파일을 선택해주세요.";
-        selectedImageData = null;
+        selectedImageFile = null;
     });
 
-    function setupProfileDropdown() {
-        const profileImage = document.getElementById("profile-image");
-        const dropdownMenu = document.getElementById("dropdown-menu");
-
-        if (!profileImage || !dropdownMenu) return;
-
-        const loginUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
-        if (loginUser.profileImage) {
-            profileImage.style.backgroundImage = loginUser.profileImage;
-            profileImage.style.backgroundSize = "cover";
-            profileImage.style.backgroundPosition = "center";
-            profileImage.style.width = "30px";
-            profileImage.style.height = "30px";
-            profileImage.style.borderRadius = "50%";
-        }
-
-        profileImage.addEventListener("click", () => {
-            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
-        });
-
-        document.addEventListener("click", (event) => {
-            if (!event.target.closest(".profile-list")) {
-                dropdownMenu.style.display = "none";
-            }
-        });
-    }
 });

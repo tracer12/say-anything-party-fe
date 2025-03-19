@@ -98,3 +98,14 @@ a {
     font-size: 14px;
     color: #444;
 }
+
+
+.author-info {
+    display: flex;
+    align-items: center;
+    vertical-align: center;
+}
+
+.writer-profile-image{
+    margin-right : 10px;
+}

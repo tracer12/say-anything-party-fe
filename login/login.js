@@ -12,52 +12,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const emailValue = emailInput.value.trim();
         const passwordValue = passwordInput.value.trim();
 
+        // 이메일 검사
         if (emailValue === "" || emailValue.length < 5 || !validateEmail(emailValue)) {
             emailHelper.textContent = "*올바른 이메일 주소 형식을 입력해주세요";
-            emailHelper.classList.add('visible');
+            emailHelper.style.display = 'block'; // helper text 표시
         } else {
-            emailHelper.classList.remove('visible');
+            emailHelper.style.display = 'none'; // helper text 숨기기
         }
 
+        // 비밀번호 검사
         if (passwordValue === "") {
             passwordHelper.textContent = "*비밀번호를 입력해주세요";
-            passwordHelper.classList.add('visible');
+            passwordHelper.style.display = 'block'; // helper text 표시
         } else if (!validatePassword(passwordValue)) {
             passwordHelper.textContent = "*비밀번호는 8자 이상, 20자 이하이며, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다";
-            passwordHelper.classList.add('visible');
+            passwordHelper.style.display = 'block'; // helper text 표시
         } else {
-            passwordHelper.classList.remove('visible');
+            passwordHelper.style.display = 'none'; // helper text 숨기기
         }
 
-        if (emailHelper.classList.contains('visible') || passwordHelper.classList.contains('visible')) {
+        // 유효성 검사가 실패하면 종료
+        if (emailHelper.style.display === 'block' || passwordHelper.style.display === 'block') {
             return;
         }
 
-        const users = JSON.parse(localStorage.getItem('users'));
-        if (users) {
-            const user = users.find(user => user.email === emailValue && user.password === passwordValue);
-            if (user) {
-                localStorage.setItem('loggedInUser', JSON.stringify(user));
-
-                const originalColor = loginButton.style.backgroundColor;
-                loginButton.style.backgroundColor = "#7F6AEE";
-                setTimeout(() => {
-                    loginButton.style.backgroundColor = originalColor;
-                    setTimeout(() => {
-                        window.location.href = "../posts/list/list.html";
-                    }, 500);
-                }, 500);
-            } else {
-                passwordHelper.textContent = "*아이디 또는 비밀번호를 확인해주세요";
-                passwordHelper.classList.add('visible');
-            }
-        } else {
-            passwordHelper.textContent = "*사용자 데이터를 로드할 수 없습니다. 다시 시도해주세요.";
-            passwordHelper.classList.add('visible');
-        }
-
-        /* 로그인 요청 api
-        fetch("https://example.com/api/auth/login", {
+        // ✅ 로그인 요청 API (fetch 활성화)
+        fetch("http://localhost:8080/users/auth", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -67,26 +47,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 password: passwordValue
             })
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`로그인 실패: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
-            localStorage.setItem('loggedInUser', JSON.stringify(data.user));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`로그인 실패: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                localStorage.setItem('profileImage', data.profileImage);
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
 
-            alert("로그인 성공!");
-            window.location.href = "../posts/list/list.html";
-        })
-        .catch(error => {
-            console.error("로그인 요청 중 오류 발생:", error.message);
-            passwordHelper.textContent = "*아이디 또는 비밀번호를 확인해주세요";
-            passwordHelper.classList.add('visible');
-        });
-        */
+                alert("로그인 성공!");
+                window.location.href = "../posts/list/list.html";
+            })
+            .catch(error => {
+                console.error("로그인 요청 중 오류 발생:", error.message);
+                passwordHelper.textContent = "*아이디 또는 비밀번호를 확인해주세요";
+                passwordHelper.style.display = 'block'; // helper text 표시
+            });
     });
 
     function validateEmail(email) {

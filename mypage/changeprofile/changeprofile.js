@@ -1,3 +1,41 @@
+document.addEventListener("DOMContentLoaded", async function () {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "login.html";
+        return;
+    }
+    try {
+        const response = await fetch("http://localhost:8080/users", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
+        }
+        const userData = await response.json();
+        displayEmail(userData.email);
+
+    } catch (error) {
+        console.error("사용자 정보 요청 중 오류 발생:", error.message);
+    }
+
+
+    function displayEmail(email) {
+        const emailText = document.getElementById("email-text");
+        if (emailText) {
+            emailText.textContent = email;
+        } else {
+            console.error("❌ 'email-text' 요소를 찾을 수 없습니다.");
+        }
+    }
+
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     fetch("../../header/header.html")
         .then(response => response.text())
@@ -18,22 +56,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const nicknameInput = document.getElementById("nickname-input");
     const changeProfileButton = document.querySelector(".changeprofile-button");
     const nicknameHelperText = document.querySelector(".nickname-helper-text");
-    const emailText = document.getElementById("email-text");
-    const profileIcon = document.querySelector(".profile-icon");
+    const profileImage = document.querySelector(".profile-icon");
     const deleteProfileButton = document.querySelector(".deleteprofile-button");
     const modal = document.querySelector(".modal");
     const cancelButton = document.querySelector("#cancelButton");
     const confirmButton = document.querySelector("#confirmButton");
-    let profileImageUploaded = false;
+    let profileImageFile = null;
 
-    const loginUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
-    emailText.textContent = loginUser.email || "이메일 없음";
 
-    if (loginUser.profileImage) {
-        profileIcon.style.backgroundImage = loginUser.profileImage;
-    }
 
-    profileIcon.addEventListener("click", () => {
+    const profileIcon = localStorage.getItem('profileImage') || "";
+
+    profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`;
+    profileImage.style.backgroundSize = '160px 160px';  // 🔹 크기 160px로 조정
+    profileImage.style.backgroundPosition = 'center';
+    profileImage.style.backgroundRepeat = 'no-repeat';
+    profileImage.style.width = '160px';  // 🔹 너비 160px로 설정
+    profileImage.style.height = '160px'; // 🔹 높이 160px로 설정
+    profileImage.style.borderRadius = '50%';  // 🔹 원형으로 설정   
+
+
+    profileImage.addEventListener("click", () => {
+
         const fileInput = document.createElement("input");
         fileInput.type = "file";
         fileInput.accept = "image/*";
@@ -42,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fileInput.addEventListener("change", (e) => {
             const file = e.target.files[0];
             if (file) {
+                profileImageFile = file; // ✅ 파일 저장
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     const img = new Image();
@@ -52,17 +97,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         canvas.width = size;
                         canvas.height = size;
                         ctx.drawImage(img, 0, 0, size, size);
-                        profileIcon.style.backgroundImage = `url(${canvas.toDataURL()})`;
-                        profileImageUploaded = true;
-
-                        updateProfileImage(canvas.toDataURL());
+                        profileImage.style.backgroundImage = `url(${canvas.toDataURL()})`;
                     };
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         });
-    });
+    }); 4
+
+
 
     nicknameInput.addEventListener("blur", () => {
         const nicknameValue = nicknameInput.value.trim();
@@ -80,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    changeProfileButton.addEventListener("click", () => {
+    changeProfileButton.addEventListener("click", async () => {
         const nicknameValue = nicknameInput.value.trim();
 
         if (nicknameValue === "") {
@@ -93,32 +137,35 @@ document.addEventListener("DOMContentLoaded", () => {
             nicknameHelperText.textContent = "*띄어쓰기를 없애주세요.";
             nicknameHelperText.style.visibility = "visible";
         } else {
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-            const userIndex = users.findIndex(user => user.email === loginUser.email);
+            const formData = new FormData();
+            formData.append("nickname", nicknameValue);
 
-            if (userIndex !== -1) {
-                users[userIndex].nickname = nicknameValue;
+            if (profileImageFile) {
+                formData.append("profile_image", profileImageFile);
+            }
 
-                if (profileImageUploaded) {
-                    users[userIndex].profileImage = profileIcon.style.backgroundImage;
+            try {
+                const response = await fetch(`http://localhost:8080/users/profile`, {
+                    method: "PATCH",
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                localStorage.setItem('profileImage', data.profileImage);
+
+                if (!response.ok) {
+                    throw new Error("프로필 변경에 실패했습니다.");
                 }
 
-                localStorage.setItem("users", JSON.stringify(users));
 
-                const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-                loggedInUser.nickname = nicknameValue;
-
-                if (profileImageUploaded) {
-                    loggedInUser.profileImage = profileIcon.style.backgroundImage;
-                }
-
-                localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
-
-                alert("수정 완료");
-
+                alert("프로필이 성공적으로 변경되었습니다.");
                 window.location.href = "../../posts/list/list.html";
-            } else {
-                console.error("해당 이메일의 사용자가 없습니다.");
+            } catch (error) {
+                alert("프로필 변경 중 오류가 발생했습니다.");
+                console.error("프로필 변경 오류:", error);
             }
         }
     });
@@ -137,34 +184,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    confirmButton.addEventListener("click", () => {
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        users = users.filter(u => u.email !== loginUser.email);
-        localStorage.setItem("users", JSON.stringify(users));
-        localStorage.removeItem("loggedInUser");
+    confirmButton.addEventListener("click", async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/users`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                }
+            });
 
-        let posts = JSON.parse(localStorage.getItem("posts")) || [];
-        posts = posts.filter(post => post.writerId !== loginUser.id);
-        localStorage.setItem("posts", JSON.stringify(posts));
+            if (!response.ok) {
+                throw new Error("회원 탈퇴에 실패했습니다.");
+            }
 
-        modal.style.display = "none";
-
-        const toastMessage = document.createElement('div');
-        toastMessage.textContent = "회원 탈퇴가 완료되었습니다.";
-        toastMessage.style.position = "fixed";
-        toastMessage.style.top = "83%";
-        toastMessage.style.left = "50%";
-        toastMessage.style.transform = "translateX(-50%)";
-        toastMessage.style.backgroundColor = "#ACA0EB";
-        toastMessage.style.color = "white";
-        toastMessage.style.padding = "10px 20px";
-        toastMessage.style.borderRadius = "5px";
-        document.body.appendChild(toastMessage);
-
-        setTimeout(() => {
-            document.body.removeChild(toastMessage);
+            alert("회원 탈퇴가 완료되었습니다.");
             window.location.href = "../../../login/login.html";
-        }, 3000);
+        } catch (error) {
+            alert("회원 탈퇴 중 오류가 발생했습니다.");
+            console.error("회원 탈퇴 오류:", error);
+        }
     });
 
     function setupProfileDropdown() {
@@ -186,20 +224,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateProfileImage(imageData = null) {
         const profileImage = document.getElementById("profile-image");
-        const loginUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
+        const profileIcon = localStorage.getItem('profileImage') || "";
 
-        if (!profileImage) return;
-
-        if (imageData) {
-            profileImage.style.backgroundImage = `url(${imageData})`;
-        } else if (loginUser.profileImage) {
-            profileImage.style.backgroundImage = loginUser.profileImage;
+        if (profileIcon) {
+            profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
+            profileImage.style.backgroundSize = 'cover';
+            profileImage.style.backgroundPosition = 'center';
+            profileImage.style.width = '30px';
+            profileImage.style.height = '30px';
+            profileImage.style.borderRadius = '50%';
         }
-
-        profileImage.style.backgroundSize = "cover";
-        profileImage.style.backgroundPosition = "center";
-        profileImage.style.width = "30px";
-        profileImage.style.height = "30px";
-        profileImage.style.borderRadius = "50%";
     }
 });
