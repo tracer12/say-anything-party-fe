@@ -10,31 +10,9 @@
 
 <body>
     <section class="wrap">
-
-        <article class="header">
-            <div class="header-left">
-                <button class="back-space" onclick="window.location.href='../list/list.html'">&lt;</button>
-            </div>
-            <div class="header-center">
-                <h1 class="title">아무 말 대잔치</h1>
-            </div>
-            <div class="header-right">
-                <div class="profile-list">
-                    <div class="profile-image" id="profile-image"></div>
-                    <div id="dropdown-menu" class="dropdown-menu">
-                        <a href="../../mypage/changeprofile/changeprofile.html">회원정보수정</a>
-                        <a href="../../mypage/changepassword/changepassword.html">비밀번호수정</a>
-                        <a href="../../login/login.html">로그아웃</a>
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <hr class="horizon-line" />
-
+        <div id="header-container"></div>
         <div class="detail-container">
             <h2 id="post-title"></h2>
-
             <div id="comment-box">
                 <textarea id="comment-input" placeholder="댓글을 입력하세요"></textarea>
                 <button id="comment-submit">댓글 등록</button>
@@ -43,6 +21,7 @@
         </div>
     </section>
     <script src="detail.js"></script>
+    <script src="../../header/header.js"></script>
 </body>
 
 </html>

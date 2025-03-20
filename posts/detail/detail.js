@@ -1,8 +1,28 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const selectedPostId = localStorage.getItem('selectedPostId');
-    const dropdownMenu = document.getElementById('dropdown-menu');
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("../../header/header.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("header-container").innerHTML = data;
+            setupProfileDropdown();
+        })
+        .catch(error => console.error("헤더 로드 실패:", error));
+});
+
+if (!document.querySelector("link[href*='header.css']")) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../header/header.css";
+    document.head.appendChild(link);
+}
+
+function setupProfileDropdown() {
     const profileImage = document.getElementById('profile-image');
-    let selectedItemForDeletion = null;
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    if (!profileImage || !dropdownMenu) {
+        console.error("프로필 이미지 또는 드롭다운 메뉴를 찾을 수 없습니다.");
+        return;
+    }
 
     const profileIcon = localStorage.getItem('profileImage') || "";
     if (profileIcon) {
@@ -13,6 +33,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         profileImage.style.height = '30px';
         profileImage.style.borderRadius = '50%';
     }
+
+    profileImage.addEventListener('click', () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.profile-list')) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const selectedPostId = localStorage.getItem('selectedPostId');
+    let selectedItemForDeletion = null;
 
     if (!selectedPostId) {
         alert("잘못된 접근입니다.");
@@ -33,7 +68,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // ✅ `/posts/{pid}`에서 데이터 가져오기
         const response = await fetch(`http://localhost:8080/posts/${selectedPostId}`);
         if (!response.ok) {
             throw new Error("게시글을 불러오는 데 실패했습니다.");
@@ -42,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const post = data.post;
         const comments = data.comments;
 
-        if (post) { // ✅ 기존 UI 유지하며 데이터 적용
+        if (post) {
             const detailContainer = document.querySelector('.detail-container');
 
             const postCreateDate = formattedDate(post.createDate);
@@ -84,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
 
 
-            // ✅ 프로필 이미지 설정
+            // 작성자 프로필 이미지
             const writerProfileImage = document.getElementById('writer-profile-image');
             if (post.profileImage) {
                 writerProfileImage.style.backgroundImage = `url(http://localhost:8080${post.profileImage})`;
@@ -97,23 +131,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 writerProfileImage.innerHTML = `<div class="default-profile"></div>`;
             }
 
-            // ✅ 헤더 프로필 클릭 시 드롭다운 메뉴 표시/숨김 처리
-            profileImage.addEventListener('click', (event) => {
-                event.stopPropagation(); // 이벤트 전파 방지
-                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-            });
-
-            document.addEventListener('click', (event) => {
-                if (!event.target.closest('#profile-image') && !event.target.closest('#dropdown-menu')) {
-                    dropdownMenu.style.display = 'none';
-                }
-            });
 
             document.querySelector('.post-edit-button').addEventListener('click', () => {
                 window.location.href = '../edit/edit.html';
             });
 
-            // ✅ 게시글 삭제 모달창
             const postModal = document.createElement('div');
             postModal.classList.add('modal-post');
             postModal.style.display = 'none';
@@ -223,7 +245,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 comments.forEach(comment => {
                     const commentElement = document.createElement('div');
                     commentElement.classList.add('comment-item');
-                    commentElement.setAttribute('data-cid', comment.cid); // ✅ 댓글 ID 추가
+                    commentElement.setAttribute('data-cid', comment.cid);
                     const commentCreateDate = formattedDate(comment.createDate);
                     commentElement.innerHTML = `
                         <div class="comment-header">
@@ -246,19 +268,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
 
-            // ✅ 댓글 수정 및 삭제 이벤트 핸들러 추가
             document.querySelector('.comments-list').addEventListener('click', async (event) => {
-                const commentElement = event.target.closest('.comment-item'); // 클릭한 댓글의 부모 요소 가져오기
+                const commentElement = event.target.closest('.comment-item');
                 if (!commentElement) return;
 
-                selectedCommentId = commentElement.getAttribute('data-cid'); // ✅ 선택한 댓글 ID 저장
+                selectedCommentId = commentElement.getAttribute('data-cid');
                 if (!selectedCommentId) {
                     alert("댓글 ID를 찾을 수 없습니다.");
                     return;
                 }
 
                 if (event.target.classList.contains('comment-edit-button')) {
-                    // ✅ 수정할 댓글 내용 입력받기
                     const newContent = prompt("수정할 댓글을 입력하세요:");
                     if (!newContent) return;
 
@@ -284,12 +304,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 if (event.target.classList.contains('comment-delete-button')) {
-                    // ✅ 삭제 모달 표시
                     commentModal.style.display = "flex";
                 }
             });
 
-            // ✅ 댓글 삭제 모달창
             const commentModal = document.createElement('div');
             commentModal.classList.add('modal-comment');
             commentModal.style.display = 'none';
@@ -305,7 +323,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
             detailContainer.appendChild(commentModal);
 
-            // ✅ 모달의 "확인" 버튼 클릭 시 댓글 삭제 요청
             document.querySelector('.modal-comment-button-confirm').addEventListener('click', async () => {
                 if (!selectedCommentId) {
                     alert("삭제할 댓글을 선택하세요.");
@@ -325,23 +342,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
 
                     alert("댓글이 삭제되었습니다.");
-                    commentModal.style.display = "none"; // 모달 닫기
-                    location.reload(); // 페이지 새로고침 (댓글 목록 갱신)
+                    commentModal.style.display = "none";
+                    location.reload();
                 } catch (error) {
                     alert("댓글 삭제 권한이 없습니다.");
                     commentModal.style.display = "none";
                 }
             });
 
-            // ✅ 모달 취소 버튼 클릭 시 닫기
             document.querySelector('.modal-cancel-button').addEventListener('click', () => {
                 commentModal.style.display = "none";
             });
 
-            // ✅ 댓글 목록 갱신
             updateCommentsList();
-
-            // ✅ 모달 취소 버튼
             document.querySelectorAll('.modal-cancel-button').forEach(button => {
                 button.addEventListener('click', () => {
                     postModal.style.display = "none";

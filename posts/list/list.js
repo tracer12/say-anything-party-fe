@@ -1,3 +1,50 @@
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("../../header/header.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("header-container").innerHTML = data;
+            setupProfileDropdown();
+        })
+        .catch(error => console.error("헤더 로드 실패:", error));
+});
+
+if (!document.querySelector("link[href*='header.css']")) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../header/header.css";
+    document.head.appendChild(link);
+}
+
+function setupProfileDropdown() {
+    const profileImage = document.getElementById('profile-image');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    if (!profileImage || !dropdownMenu) {
+        console.error("프로필 이미지 또는 드롭다운 메뉴를 찾을 수 없습니다.");
+        return;
+    }
+
+    const profileIcon = localStorage.getItem('profileImage') || "";
+    if (profileIcon) {
+        profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
+        profileImage.style.backgroundSize = 'cover';
+        profileImage.style.backgroundPosition = 'center';
+        profileImage.style.width = '30px';
+        profileImage.style.height = '30px';
+        profileImage.style.borderRadius = '50%';
+    }
+
+    profileImage.addEventListener('click', () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.profile-list')) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+}
+
 (function () {
     let currentPage = 1;
     const postsPerPage = 10;
@@ -45,52 +92,6 @@
         });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        fetch("../../header/header.html")
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("header-container").innerHTML = data;
-                setupProfileDropdown();
-            })
-            .catch(error => console.error("헤더 로드 실패:", error));
-    });
-
-    if (!document.querySelector("link[href*='header.css']")) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "../../header/header.css";
-        document.head.appendChild(link);
-    }
-
-    function setupProfileDropdown() {
-        const profileImage = document.getElementById('profile-image');
-        const dropdownMenu = document.getElementById('dropdown-menu');
-
-        if (!profileImage || !dropdownMenu) {
-            console.error("프로필 이미지 또는 드롭다운 메뉴를 찾을 수 없습니다.");
-            return;
-        }
-
-        const profileIcon = localStorage.getItem('profileImage') || "";
-        if (profileIcon) {
-            profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
-            profileImage.style.backgroundSize = 'cover';
-            profileImage.style.backgroundPosition = 'center';
-            profileImage.style.width = '30px';
-            profileImage.style.height = '30px';
-            profileImage.style.borderRadius = '50%';
-        }
-
-        profileImage.addEventListener('click', () => {
-            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', (event) => {
-            if (!event.target.closest('.profile-list')) {
-                dropdownMenu.style.display = 'none';
-            }
-        });
-    }
 
     // 게시글을 화면에 표시하는 함수
     function displayPosts(posts) {
@@ -126,7 +127,6 @@
 
             console.log(post.profileImage);
 
-            // ✅ id가 아니라 class로 선택 (postElement 내부에서만 찾도록)
             const writerProfileImage = postElement.querySelector('.writer-profile-image');
 
             if (post.profileImage) {
