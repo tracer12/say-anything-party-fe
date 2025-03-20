@@ -85,14 +85,13 @@ body {
 }
 
 
-.helper-message {
+.helper-text {
+    visibility: hidden;
     color: red;
     font-size: 0.9em;
-    display: none;
-}
-
-.helper-message.visible {
-    display: block;
+    height: 35px;
+    line-height: 20px;
+    margin-top: 0;
 }
 
 .login-button {

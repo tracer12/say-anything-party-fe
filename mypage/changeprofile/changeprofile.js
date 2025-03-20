@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    const nicknameInput = document.getElementById("nickname-input");
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
         alert("로그인이 필요합니다.");
@@ -18,12 +19,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
         }
         const userData = await response.json();
+
+        document.getElementById("nickname-input").value = userData.nickname;
+
         displayEmail(userData.email);
 
     } catch (error) {
         console.error("사용자 정보 요청 중 오류 발생:", error.message);
     }
-
 
     function displayEmail(email) {
         const emailText = document.getElementById("email-text");

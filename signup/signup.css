@@ -78,9 +78,6 @@ body {
     visibility: hidden;
     color: red;
     font-size: 0.9em;
-    height: 35px;
-    line-height: 20px;
-    margin-top: 0;
 }
 
 .upload-profile {
@@ -103,7 +100,6 @@ body {
 .nickname-text {
     font-size: 1em;
     font-weight: bold;
-    margin-bottom: 10px;
 }
 
 .input {
@@ -111,7 +107,6 @@ body {
     height: 40px;
     padding-left: 10px;
     font-weight: bold;
-    margin-bottom: 5px;
     border: 2px solid #000000;
     border-radius: 5px;
     box-sizing: border-box;

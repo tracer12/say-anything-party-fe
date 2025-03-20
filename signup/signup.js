@@ -19,13 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
         element.style.visibility = message ? "visible" : "hidden";
     }
 
-    emailInput.addEventListener('input', () => {
+    emailInput.addEventListener('blur', () => {
         const email = emailInput.value.trim();
-        if (!email) return setHelperText(helperTexts.email, "*이메일을 입력해주세요.");
-        if (!validateEmail(email)) return setHelperText(helperTexts.email, "*올바른 이메일 형식을 입력하세요.");
-
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        setHelperText(helperTexts.email, users.some(user => user.email === email) ? "*중복된 이메일입니다." : "");
+        setHelperText(helperTexts.email,
+            !email ? "*이메일을 입력해주세요" :
+                !validateEmail(email) ? "*올바른 이메일 형식을 입력하세요." :
+                    ""
+        );
+        helperTexts.email.style.height = "16px";
     });
 
     passwordInput.addEventListener('blur', () => {
@@ -35,13 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 !validatePassword(password) ? "*비밀번호는 8~20자, 대소문자, 숫자, 특수문자 포함해야 합니다." :
                     ""
         );
+        helperTexts.password.style.height = "16px";
     });
 
     passwordInputCheck.addEventListener('blur', () => {
         setHelperText(helperTexts.passwordCheck,
             passwordInputCheck.value !== passwordInput.value ? "*비밀번호가 일치하지 않습니다." : ""
         );
+
+
+        helperTexts.passwordCheck.style.height = "16px";
     });
+
 
     nicknameInput.addEventListener('blur', () => {
         const nickname = nicknameInput.value.trim();
@@ -50,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nickname.length > 10 ? "*닉네임은 최대 10자까지 가능합니다." :
                     nickname.includes(" ") ? "*띄어쓰기를 없애주세요." : ""
         );
+        helperTexts.nickname.style.height = "16px";
     });
 
     profileIcon.addEventListener('click', () => {

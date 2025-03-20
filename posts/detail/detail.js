@@ -33,6 +33,10 @@ function setupProfileDropdown() {
         profileImage.style.height = '30px';
         profileImage.style.borderRadius = '50%';
     }
+    else {
+        profileImage.innerHTML = `<div class="default-profile"></div>`;
+    }
+
 
     profileImage.addEventListener('click', () => {
         dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
