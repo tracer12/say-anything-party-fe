@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // ✅ 기존 게시글 정보 가져오기
     try {
         const response = await fetch(`http://localhost:8080/posts/${selectedPostId}`, {
             method: "GET",
@@ -77,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "../list/list.html";
     }
 
+    // 파일 선택 버튼 클릭 시 파일 업로드 창 띄우기
     fileSelectButton.addEventListener("click", () => {
         const fileInput = document.createElement("input");
         fileInput.type = "file";
@@ -92,7 +92,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    // ✅ 게시글 수정 요청
     editButton.addEventListener("click", async () => {
         const updatedTitle = document.getElementById("title-textarea").value.trim();
         const updatedContent = document.getElementById("contents-textarea").value.trim();
@@ -106,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         formData.append("title", updatedTitle);
         formData.append("content", updatedContent);
         if (selectedImageFile) {
-            formData.append("image", selectedImageFile);
+            formData.append("postImage", selectedImageFile);
         }
 
         try {

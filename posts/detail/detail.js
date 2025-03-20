@@ -41,8 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
         const post = data.post;
         const comments = data.comments;
-        console.log(post);
-        console.log(comments);
+
         if (post) { // ✅ 기존 UI 유지하며 데이터 적용
             const detailContainer = document.querySelector('.detail-container');
 
@@ -155,6 +154,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                     postModal.style.display = "none";
                 }
             });
+
+            document.querySelector('.like-button').addEventListener('click', async () => {
+
+                try {
+                    const response = await fetch(`http://localhost:8080/posts/${selectedPostId}/like`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 409) {
+                            alert("이미 좋아요를 눌렀습니다.");
+                        } else {
+                            throw new Error("좋아요 처리에 실패했습니다.");
+                        }
+                    } else {
+                        alert("좋아요를 눌렀습니다!");
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert("좋아요 중 오류가 발생했습니다.");
+                    console.error("좋아요 오류:", error);
+                }
+            });
+
 
             document.querySelector('.comment-input-button').addEventListener('click', async () => {
                 const commentInput = document.querySelector('.comment-input');
