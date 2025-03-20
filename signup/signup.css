@@ -57,7 +57,7 @@ body {
 
 /* 회원가입 컨테이너 */
 .signup-container {
-    width: 400px;
+    width: 410px;
     margin: 0 auto;
 }
 
@@ -78,6 +78,9 @@ body {
     visibility: hidden;
     color: red;
     font-size: 0.9em;
+    height: 30px;
+    line-height: 20px;
+    margin-top: 0;
 }
 
 .upload-profile {
@@ -100,6 +103,7 @@ body {
 .nickname-text {
     font-size: 1em;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .input {
@@ -129,9 +133,15 @@ body {
     color: white;
 }
 
+.signup-button:hover {
+    background-color: #7F6AEE;
+}
+
 .login-text {
     text-align: center;
+    font-size: 15px;
 }
+
 
 a {
     color: inherit;

@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const file = e.target.files[0];
 
             if (file) {
-                selectedImageFile = file; // ✅ 선택한 파일을 전역 변수에 저장
+                selectedImageFile = file;
 
                 const reader = new FileReader();
                 reader.onload = function (e) {

@@ -38,6 +38,7 @@ body {
     display: flex;
     justify-content: center;
     background-color: #f3f3f3;
+    overflow-y: scroll;
 }
 
 .wrap {
@@ -50,7 +51,7 @@ body {
 /*로그인 컨테이너*/
 
 .login-container {
-    width: 400px;
+    width: 410px;
     margin: 0 auto;
 }
 
@@ -63,7 +64,7 @@ body {
 
 .email-text,
 .password-text {
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: bold;
     margin-bottom: 10px;
 }
@@ -73,7 +74,6 @@ body {
     height: 40px;
     padding-left: 10px;
     font-weight: bold;
-    margin-bottom: 5px;
     border: 2px solid #000000;
     border-radius: 5px;
     box-sizing: border-box;
@@ -84,12 +84,11 @@ body {
     outline: none;
 }
 
-
 .helper-text {
     visibility: hidden;
     color: red;
     font-size: 0.9em;
-    height: 35px;
+    height: 30px;
     line-height: 20px;
     margin-top: 0;
 }

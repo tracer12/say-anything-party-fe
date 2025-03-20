@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         location.reload();
                     }
                 } catch (error) {
-                    alert("좋아요 중 오류가 발생했습니다.");
+                    alert("좋아요는 계정당 한 번만 누를 수 있습니다");
                     console.error("좋아요 오류:", error);
                 }
             });
