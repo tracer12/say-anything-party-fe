@@ -58,13 +58,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const nicknameInput = document.getElementById("nickname-input");
     const changeProfileButton = document.querySelector(".changeprofile-button");
-    const nicknameHelperText = document.querySelector(".nickname-helper-text");
     const profileImage = document.querySelector(".profile-icon");
     const deleteProfileButton = document.querySelector(".deleteprofile-button");
     const modal = document.querySelector(".modal");
     const cancelButton = document.querySelector("#cancelButton");
     const confirmButton = document.querySelector("#confirmButton");
     let profileImageFile = null;
+
+    const helperTexts = {
+        nickname: document.querySelector('.nickname-helper-text'),
+    };
+
+
+    function setHelperText(element, message) {
+        element.textContent = message;
+        element.style.visibility = message ? "visible" : "hidden";
+    }
+
+    nicknameInput.addEventListener('blur', () => {
+        const nickname = nicknameInput.value.trim();
+        setHelperText(helperTexts.nickname,
+            !nickname ? "*닉네임을 입력해주세요." :
+                nickname.length > 10 ? "*닉네임은 최대 10자까지 가능합니다." :
+                    nickname.includes(" ") ? "*띄어쓰기를 없애주세요." : ""
+        );
+        helperTexts.nickname.style.height = "16px";
+    });
 
 
 
@@ -111,65 +130,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    nicknameInput.addEventListener("blur", () => {
-        const nicknameValue = nicknameInput.value.trim();
-        if (nicknameValue === "") {
-            nicknameHelperText.textContent = "*닉네임을 입력해주세요.";
-            nicknameHelperText.style.visibility = "visible";
-        } else if (nicknameValue.length > 10) {
-            nicknameHelperText.textContent = "*닉네임은 최대 10자까지 작성 가능합니다.";
-            nicknameHelperText.style.visibility = "visible";
-        } else if (nicknameValue.includes(" ")) {
-            nicknameHelperText.textContent = "*띄어쓰기를 없애주세요.";
-            nicknameHelperText.style.visibility = "visible";
-        } else {
-            nicknameHelperText.style.visibility = "hidden";
-        }
-    });
 
     changeProfileButton.addEventListener("click", async () => {
         const nicknameValue = nicknameInput.value.trim();
+        const formData = new FormData();
+        formData.append("nickname", nicknameValue);
 
-        if (nicknameValue === "") {
-            nicknameHelperText.textContent = "*닉네임을 입력해주세요.";
-            nicknameHelperText.style.visibility = "visible";
-        } else if (nicknameValue.length > 10) {
-            nicknameHelperText.textContent = "*닉네임은 최대 10자까지 작성 가능합니다.";
-            nicknameHelperText.style.visibility = "visible";
-        } else if (nicknameValue.includes(" ")) {
-            nicknameHelperText.textContent = "*띄어쓰기를 없애주세요.";
-            nicknameHelperText.style.visibility = "visible";
-        } else {
-            const formData = new FormData();
-            formData.append("nickname", nicknameValue);
+        if (profileImageFile) {
+            formData.append("profile_image", profileImageFile);
+        }
 
-            if (profileImageFile) {
-                formData.append("profile_image", profileImageFile);
+        try {
+            const response = await fetch(`http://localhost:8080/users/profile`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+            localStorage.setItem('profileImage', data.profileImage);
+
+            if (!response.ok) {
+                throw new Error("프로필 변경에 실패했습니다.");
             }
 
-            try {
-                const response = await fetch(`http://localhost:8080/users/profile`, {
-                    method: "PATCH",
-                    headers: {
-                        "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
-                    },
-                    body: formData
-                });
 
-                const data = await response.json();
-                localStorage.setItem('profileImage', data.profileImage);
-
-                if (!response.ok) {
-                    throw new Error("프로필 변경에 실패했습니다.");
-                }
-
-
-                alert("프로필이 성공적으로 변경되었습니다.");
-                window.location.href = "../../posts/list/list.html";
-            } catch (error) {
-                alert("프로필 변경 중 오류가 발생했습니다.");
-                console.error("프로필 변경 오류:", error);
-            }
+            alert("프로필이 성공적으로 변경되었습니다.");
+            window.location.href = "../../posts/list/list.html";
+        } catch (error) {
+            alert("프로필 변경 중 오류가 발생했습니다.");
+            console.error("프로필 변경 오류:", error);
         }
     });
 

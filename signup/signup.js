@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordInputCheck.value !== passwordInput.value ? "*비밀번호가 일치하지 않습니다." : ""
         );
 
-
         helperTexts.passwordCheck.style.height = "16px";
     });
 

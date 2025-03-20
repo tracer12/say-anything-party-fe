@@ -46,55 +46,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("password-input");
     const passwordInputCheck = document.getElementById("password-input-check");
     const changepasswordButton = document.querySelector(".changepassword-button");
-    const passwordHelperText = document.querySelector(".changepassword-helper-text");
-    const passwordCheckHelperText = document.querySelector(".changepassword-check-helper-text");
+
+
+    const helperTexts = {
+        password: document.querySelector('.password-helper-text'),
+        passwordCheck: document.querySelector('.password-check-helper-text'),
+    };
+
+    function setHelperText(element, message) {
+        element.textContent = message;
+        element.style.visibility = message ? "visible" : "hidden";
+    }
+
+    passwordInput.addEventListener('blur', () => {
+        const password = passwordInput.value.trim();
+        setHelperText(helperTexts.password,
+            !password ? "*비밀번호를 입력해주세요." :
+                !validatePassword(password) ? "*비밀번호는 8~20자, 대소문자, 숫자, 특수문자 포함해야 합니다." :
+                    ""
+        );
+        helperTexts.password.style.height = "16px";
+    });
+
+    passwordInputCheck.addEventListener('blur', () => {
+        setHelperText(helperTexts.passwordCheck,
+            passwordInputCheck.value !== passwordInput.value ? "*비밀번호가 일치하지 않습니다." : ""
+        );
+
+        helperTexts.passwordCheck.style.height = "16px";
+    });
 
     function validatePassword(password) {
         const re = /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
         return re.test(password);
     }
 
-    passwordInput.addEventListener("blur", () => {
-        const passwordValue = passwordInput.value.trim();
-        if (passwordValue === "") {
-            passwordHelperText.textContent = "*비밀번호를 입력해주세요.";
-            passwordHelperText.style.visibility = "visible";
-        } else if (!validatePassword(passwordValue)) {
-            passwordHelperText.textContent = "*비밀번호는 8자 이상, 20자 이하이며, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다.";
-            passwordHelperText.style.visibility = "visible";
-        } else {
-            passwordHelperText.style.visibility = "hidden";
-        }
-    });
-
-    passwordInputCheck.addEventListener("blur", () => {
-        const passwordValue = passwordInput.value.trim();
-        const passwordCheckValue = passwordInputCheck.value.trim();
-        if (passwordCheckValue === "") {
-            passwordCheckHelperText.textContent = "*비밀번호 확인을 입력해주세요.";
-            passwordCheckHelperText.style.visibility = "visible";
-        } else if (passwordValue !== passwordCheckValue) {
-            passwordCheckHelperText.textContent = "*비밀번호 확인을 한 번 더 입력해주세요.";
-            passwordCheckHelperText.style.visibility = "visible";
-        } else {
-            passwordCheckHelperText.style.visibility = "hidden";
-        }
-    });
 
     changepasswordButton.addEventListener("click", async () => {
         const passwordValue = passwordInput.value.trim();
-        const passwordCheckValue = passwordInputCheck.value.trim();
-
-        if (passwordValue === "") {
-            passwordHelperText.textContent = "*비밀번호를 입력해주세요.";
-            passwordHelperText.style.visibility = "visible";
-        } else if (!validatePassword(passwordValue)) {
-            passwordHelperText.textContent = "*비밀번호는 8자 이상, 20자 이하이며, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다.";
-            passwordHelperText.style.visibility = "visible";
-        } else if (passwordValue !== passwordCheckValue) {
-            passwordCheckHelperText.textContent = "*비밀번호 확인을 한 번 더 입력해주세요.";
-            passwordCheckHelperText.style.visibility = "visible";
-        } else {
+        const passwordCheckValue = passwordInputCheck.value.trim(); {
             try {
                 const response = await fetch("http://localhost:8080/users/password", {
                     method: "PATCH",
@@ -112,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     throw new Error("비밀번호 변경 실패");
                 }
 
-                // ✅ 성공 메시지 표시 (토스트 메시지)
                 const toastMessage = document.createElement("div");
                 toastMessage.textContent = "비밀번호가 변경되었습니다.";
                 toastMessage.style.position = "fixed";
