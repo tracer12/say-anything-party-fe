@@ -16,35 +16,33 @@ if (!document.querySelector("link[href*='header.css']")) {
 }
 
 function setupProfileDropdown() {
-    const profileImage = document.getElementById('profile-image');
-    const dropdownMenu = document.getElementById('dropdown-menu');
+    const profileIcon = document.getElementById("profile-icon");
+    const dropdownMenu = document.getElementById("dropdown-menu");
 
-    if (!profileImage || !dropdownMenu) {
-        console.error("프로필 이미지 또는 드롭다운 메뉴를 찾을 수 없습니다.");
-        return;
-    }
+    if (!profileIcon || !dropdownMenu) return;
 
-    const profileIcon = localStorage.getItem('profileImage') || "";
-    if (profileIcon) {
-        profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
-        profileImage.style.backgroundSize = 'cover';
-        profileImage.style.backgroundPosition = 'center';
-        profileImage.style.width = '30px';
-        profileImage.style.height = '30px';
-        profileImage.style.borderRadius = '50%';
+
+    const profileImageUrl = localStorage.getItem('profileImage') || "";
+    if (profileImageUrl) {
+        profileIcon.style.backgroundImage = `url(http://localhost:8080${profileImageUrl})`;
+        profileIcon.style.backgroundSize = 'cover';
+        profileIcon.style.backgroundPosition = 'center';
+        profileIcon.style.width = '30px';
+        profileIcon.style.height = '30px';
+        profileIcon.style.borderRadius = '50%';
     }
     else {
-        profileImage.innerHTML = `<div class="default-profile"></div>`;
+        profileIcon.innerHTML = `<div class="default-profile"></div>`;
     }
 
 
-    profileImage.addEventListener('click', () => {
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    profileIcon.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
     });
 
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('.profile-list')) {
-            dropdownMenu.style.display = 'none';
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".profile-list")) {
+            dropdownMenu.style.display = "none";
         }
     });
 }
@@ -79,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
         const post = data.post;
         const comments = data.comments;
-
+        console.log(post);
         if (post) {
             const detailContainer = document.querySelector('.detail-container');
 
@@ -365,7 +363,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     commentModal.style.display = "none";
                 });
             });
-
+            console.log(post);
         }
     } catch (error) {
         alert("게시글을 불러오는 중 오류가 발생했습니다.");

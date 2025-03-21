@@ -1,9 +1,58 @@
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("../../header/header.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("header-container").innerHTML = data;
+            setupProfileDropdown();
+        })
+        .catch(error => console.error("헤더 로드 실패:", error));
+});
+
+if (!document.querySelector("link[href*='header.css']")) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "../../header/header.css";
+    document.head.appendChild(link);
+}
+
+function setupProfileDropdown() {
+    const profileIcon = document.getElementById("profile-icon");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    if (!profileIcon || !dropdownMenu) return;
+
+
+    const profileImageUrl = localStorage.getItem('profileImage') || "";
+    if (profileImageUrl) {
+        profileIcon.style.backgroundImage = `url(http://localhost:8080${profileImageUrl})`;
+        profileIcon.style.backgroundSize = 'cover';
+        profileIcon.style.backgroundPosition = 'center';
+        profileIcon.style.width = '30px';
+        profileIcon.style.height = '30px';
+        profileIcon.style.borderRadius = '50%';
+    }
+    else {
+        profileIcon.innerHTML = `<div class="default-profile"></div>`;
+    }
+
+
+    profileIcon.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".profile-list")) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
     const nicknameInput = document.getElementById("nickname-input");
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
         alert("로그인이 필요합니다.");
-        window.location.href = "login.html";
+        window.location.href = "/login/login.html";
         return;
     }
     try {
@@ -40,25 +89,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("../../header/header.html")
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("header-container").innerHTML = data;
-            setupProfileDropdown();
-            updateProfileImage();
-        })
-        .catch(error => console.error("헤더 로드 실패:", error));
-
-    if (!document.querySelector("link[href*='header.css']")) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "../../header/header.css";
-        document.head.appendChild(link);
-    }
 
     const nicknameInput = document.getElementById("nickname-input");
     const changeProfileButton = document.querySelector(".changeprofile-button");
-    const profileImage = document.querySelector(".profile-icon");
+    const profileUploader = document.querySelector(".profile-uploader");
     const deleteProfileButton = document.querySelector(".deleteprofile-button");
     const modal = document.querySelector(".modal");
     const cancelButton = document.querySelector("#cancelButton");
@@ -68,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const helperTexts = {
         nickname: document.querySelector('.nickname-helper-text'),
     };
-
 
     function setHelperText(element, message) {
         element.textContent = message;
@@ -85,20 +118,18 @@ document.addEventListener("DOMContentLoaded", () => {
         helperTexts.nickname.style.height = "16px";
     });
 
+    const profileImageUrl = localStorage.getItem('profileImage') || "";
+
+    profileUploader.style.backgroundImage = `url(http://localhost:8080${profileImageUrl})`;
+    profileUploader.style.backgroundSize = '160px 160px';  // 🔹 크기 160px로 조정
+    profileUploader.style.backgroundPosition = 'center';
+    profileUploader.style.backgroundRepeat = 'no-repeat';
+    profileUploader.style.width = '160px';  // 🔹 너비 160px로 설정
+    profileUploader.style.height = '160px'; // 🔹 높이 160px로 설정
+    profileUploader.style.borderRadius = '50%';  // 🔹 원형으로 설정   
 
 
-    const profileIcon = localStorage.getItem('profileImage') || "";
-
-    profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`;
-    profileImage.style.backgroundSize = '160px 160px';  // 🔹 크기 160px로 조정
-    profileImage.style.backgroundPosition = 'center';
-    profileImage.style.backgroundRepeat = 'no-repeat';
-    profileImage.style.width = '160px';  // 🔹 너비 160px로 설정
-    profileImage.style.height = '160px'; // 🔹 높이 160px로 설정
-    profileImage.style.borderRadius = '50%';  // 🔹 원형으로 설정   
-
-
-    profileImage.addEventListener("click", () => {
+    profileUploader.addEventListener("click", () => {
 
         const fileInput = document.createElement("input");
         fileInput.type = "file";
@@ -119,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         canvas.width = size;
                         canvas.height = size;
                         ctx.drawImage(img, 0, 0, size, size);
-                        profileImage.style.backgroundImage = `url(${canvas.toDataURL()})`;
+                        profileUploader.style.backgroundImage = `url(${canvas.toDataURL()})`;
                     };
                     img.src = e.target.result;
                 };
@@ -200,34 +231,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    function setupProfileDropdown() {
-        const profileImage = document.getElementById("profile-image");
-        const dropdownMenu = document.getElementById("dropdown-menu");
-
-        if (!profileImage || !dropdownMenu) return;
-
-        profileImage.addEventListener("click", () => {
-            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
-        });
-
-        document.addEventListener("click", (event) => {
-            if (!event.target.closest(".profile-list")) {
-                dropdownMenu.style.display = "none";
-            }
-        });
-    }
-
-    function updateProfileImage(imageData = null) {
-        const profileImage = document.getElementById("profile-image");
-        const profileIcon = localStorage.getItem('profileImage') || "";
-
-        if (profileIcon) {
-            profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
-            profileImage.style.backgroundSize = 'cover';
-            profileImage.style.backgroundPosition = 'center';
-            profileImage.style.width = '30px';
-            profileImage.style.height = '30px';
-            profileImage.style.borderRadius = '50%';
-        }
-    }
 });

@@ -21,5 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("로그아웃 되었습니다.");
             });
         }
+
+        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken) {
+            const titleElement = document.querySelector(".title");
+            if (titleElement) {
+                titleElement.style.cursor = "pointer";
+                titleElement.addEventListener("click", () => {
+                    window.location.href = "/posts/list/list.html";
+                });
+            }
+        }
     }, 100);
 });

@@ -16,31 +16,33 @@ if (!document.querySelector("link[href*='header.css']")) {
 }
 
 function setupProfileDropdown() {
-    const profileImage = document.getElementById('profile-image');
-    const dropdownMenu = document.getElementById('dropdown-menu');
+    const profileIcon = document.getElementById("profile-icon");
+    const dropdownMenu = document.getElementById("dropdown-menu");
 
-    if (!profileImage || !dropdownMenu) {
-        console.error("프로필 이미지 또는 드롭다운 메뉴를 찾을 수 없습니다.");
-        return;
+    if (!profileIcon || !dropdownMenu) return;
+
+
+    const profileImageUrl = localStorage.getItem('profileImage') || "";
+    if (profileImageUrl) {
+        profileIcon.style.backgroundImage = `url(http://localhost:8080${profileImageUrl})`;
+        profileIcon.style.backgroundSize = 'cover';
+        profileIcon.style.backgroundPosition = 'center';
+        profileIcon.style.width = '30px';
+        profileIcon.style.height = '30px';
+        profileIcon.style.borderRadius = '50%';
+    }
+    else {
+        profileIcon.innerHTML = `<div class="default-profile"></div>`;
     }
 
-    const profileIcon = localStorage.getItem('profileImage') || "";
-    if (profileIcon) {
-        profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
-        profileImage.style.backgroundSize = 'cover';
-        profileImage.style.backgroundPosition = 'center';
-        profileImage.style.width = '30px';
-        profileImage.style.height = '30px';
-        profileImage.style.borderRadius = '50%';
-    }
 
-    profileImage.addEventListener('click', () => {
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    profileIcon.addEventListener("click", () => {
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
     });
 
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('.profile-list')) {
-            dropdownMenu.style.display = 'none';
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest(".profile-list")) {
+            dropdownMenu.style.display = "none";
         }
     });
 }
@@ -54,7 +56,7 @@ function setupProfileDropdown() {
 
         if (!accessToken) {
             alert("로그인이 필요합니다.");
-            window.location.href = "login.html";
+            window.location.href = "/login/login.html";
             return;
         }
 
@@ -73,7 +75,6 @@ function setupProfileDropdown() {
             }
 
             const posts = await response.json();
-            console.log(posts);
             displayPosts(posts); // 게시글 displayPosts로 넘김
         } catch (error) {
             console.error("게시글 가져오기 실패:", error.message);
@@ -95,6 +96,7 @@ function setupProfileDropdown() {
 
     // 게시글을 화면에 표시하는 함수
     function displayPosts(posts) {
+        console.log(posts);
         const listContainer = document.querySelector('.list-container');
 
         const postsToShow = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);

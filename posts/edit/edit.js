@@ -16,12 +16,27 @@ if (!document.querySelector("link[href*='header.css']")) {
 }
 
 function setupProfileDropdown() {
-    const profileImage = document.getElementById("profile-image");
+    const profileIcon = document.getElementById("profile-icon");
     const dropdownMenu = document.getElementById("dropdown-menu");
 
-    if (!profileImage || !dropdownMenu) return;
+    if (!profileIcon || !dropdownMenu) return;
 
-    profileImage.addEventListener("click", () => {
+
+    const profileImageUrl = localStorage.getItem('profileImage') || "";
+    if (profileImageUrl) {
+        profileIcon.style.backgroundImage = `url(http://localhost:8080${profileImageUrl})`;
+        profileIcon.style.backgroundSize = 'cover';
+        profileIcon.style.backgroundPosition = 'center';
+        profileIcon.style.width = '30px';
+        profileIcon.style.height = '30px';
+        profileIcon.style.borderRadius = '50%';
+    }
+    else {
+        profileIcon.innerHTML = `<div class="default-profile"></div>`;
+    }
+
+
+    profileIcon.addEventListener("click", () => {
         dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
     });
 
@@ -30,18 +45,7 @@ function setupProfileDropdown() {
             dropdownMenu.style.display = "none";
         }
     });
-
-    const profileIcon = localStorage.getItem('profileImage') || "";
-    if (profileIcon) {
-        profileImage.style.backgroundImage = `url(http://localhost:8080${profileIcon})`; // 🔹 서버 URL 포함
-        profileImage.style.backgroundSize = 'cover';
-        profileImage.style.backgroundPosition = 'center';
-        profileImage.style.width = '30px';
-        profileImage.style.height = '30px';
-        profileImage.style.borderRadius = '50%';
-    }
 }
-
 
 document.addEventListener("DOMContentLoaded", async () => {
     const selectedPostId = localStorage.getItem("selectedPostId");
