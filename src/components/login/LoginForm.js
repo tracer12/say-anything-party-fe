@@ -1,3 +1,7 @@
+import { LoginUtils } from "../../utils/loginUtils/LoginUtils.js";
+import { EmailValidator } from "../../utils/validatorUtils/emailValidatorUtils/EmailValidatorUtils.js";
+import { PasswordValidator } from "../../utils/validatorUtils/passwordValidatorUtils/PasswordValidatorUtils.js";
+
 export function LoginForm() {
     const state = {
         email: "",
@@ -6,18 +10,6 @@ export function LoginForm() {
         passwordHelper: "",
     };
 
-    function setState(newState) {
-        Object.assign(state, newState);
-        render();
-    }
-
-    function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function validatePassword(password) {
-        return /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(password);
-    }
 
     function setHelperText(element, message) {
         element.textContent = message;
@@ -33,7 +25,6 @@ export function LoginForm() {
             </div>
         `;
     }
-
     function render() {
         const root = document.getElementById("root");
         root.innerHTML = `
@@ -42,13 +33,14 @@ export function LoginForm() {
                 ${InputField("이메일", "text", "email", "이메일을 입력하세요", state.emailHelper)}
                 ${InputField("비밀번호", "password", "password", "비밀번호를 입력하세요", state.passwordHelper)}
                 <button class="login-button" id="login-button">로그인</button>
-                <a href="../signup/signup.html">
+                <a href="/pages/signup.html" onclick="changeUrl('/signup'); return false;">
                     <p class="signup-text">회원가입</p>
                 </a>
             </div>
         `;
         attachEventListeners();
     }
+
 
     function attachEventListeners() {
         const emailInput = document.getElementById("email-input");
@@ -64,7 +56,7 @@ export function LoginForm() {
             const email = emailInput.value.trim();
             const message = !email
                 ? "*이메일을 입력해주세요"
-                : !validateEmail(email)
+                : !EmailValidator(email)
                     ? "*올바른 이메일 형식을 입력하세요."
                     : "";
             setHelperText(helperTexts.email, message);
@@ -74,7 +66,7 @@ export function LoginForm() {
             const password = passwordInput.value.trim();
             const message = !password
                 ? "*비밀번호를 입력해주세요."
-                : !validatePassword(password)
+                : !PasswordValidator(password)
                     ? "*비밀번호는 8~20자, 대소문자, 숫자, 특수문자 포함해야 합니다."
                     : "";
             setHelperText(helperTexts.password, message);
@@ -82,33 +74,7 @@ export function LoginForm() {
 
         loginButton.addEventListener("click", (event) => {
             event.preventDefault();
-            fetch("http://localhost:8080/users/auth", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: emailInput.value,
-                    password: passwordInput.value,
-                }),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(`로그인 실패: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    localStorage.setItem("profileImage", data.profileImage);
-                    localStorage.setItem("accessToken", data.accessToken);
-                    localStorage.setItem("refreshToken", data.refreshToken);
-
-                    alert("로그인 성공!");
-                    window.location.href = "../posts/list/list.html";
-                })
-                .catch((error) => {
-                    console.error("로그인 요청 중 오류 발생:", error.message);
-                });
+            LoginUtils(emailInput.value, passwordInput.value);
         });
     }
 
