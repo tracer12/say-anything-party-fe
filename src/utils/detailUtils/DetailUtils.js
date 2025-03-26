@@ -20,7 +20,7 @@ export async function DeletePostUtils(selectedPostId) {
         throw new Error("게시글 삭제에 실패했습니다.");
     }
     alert("게시글이 삭제되었습니다.");
-    window.location.href = "../list/list.html";
+    window.location.href = "../pages/list.html";
 
 }
 

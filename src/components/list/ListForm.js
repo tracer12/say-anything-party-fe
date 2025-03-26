@@ -41,15 +41,16 @@ export function ListForm() {
                     </p>
                 </article>
                 <article>
-                    <a href="../upload/upload.html">
-                        <div class="upload-button-location">
-                            <button class="upload-button">게시글 작성</button>
-                        </div>
-                    </a>
+                    <div class="upload-button-location">
+                        <button class="upload-button">게시글 작성</button>
+                    </div>
                 </article>
             `;
-
             wrap.appendChild(listContainer);
+
+            document.querySelector(".upload-button").addEventListener("click", () => {
+                window.location.href = "../pages/upload.html";
+            });
         }
     }
 
@@ -119,7 +120,7 @@ export function ListForm() {
 
         postElement.addEventListener("click", () => {
             localStorage.setItem("selectedPostId", post.pid);
-            window.location.href = "../../posts/detail/detail.html";
+            window.location.href = "../pages/detail.html";
         });
 
         return postElement;

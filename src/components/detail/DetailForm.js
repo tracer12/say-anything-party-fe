@@ -114,7 +114,7 @@ export function DetailForm() {
 
     function attachEventListeners() {
         document.querySelector(".post-edit-button").addEventListener("click", () => {
-            window.location.href = "/edit";
+            window.location.href = "../pages/edit.html";
         });
 
         document.querySelector(".post-delete-button").addEventListener("click", async () => {
