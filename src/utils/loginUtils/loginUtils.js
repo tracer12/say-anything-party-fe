@@ -1,12 +1,13 @@
 export function LoginUtils(emailInput, passwordInput) {
+    console.log(emailInput, passwordInput)
     fetch("http://localhost:8080/users/auth", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            email: emailInput.value,
-            password: passwordInput.value,
+            email: emailInput,
+            password: passwordInput,
         }),
     })
         .then((response) => {
@@ -21,7 +22,7 @@ export function LoginUtils(emailInput, passwordInput) {
             localStorage.setItem("refreshToken", data.refreshToken);
 
             alert("로그인 성공!");
-            window.location.href = "../posts/list/list.html";
+            window.location.href = "List.html";
         })
         .catch((error) => {
             console.error("로그인 요청 중 오류 발생:", error.message);

@@ -47,6 +47,8 @@ function setupProfileDropdown() {
     });
 }
 
+//여기부터
+
 (function () {
     let currentPage = 1;
     const postsPerPage = 10;

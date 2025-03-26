@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../src/components/login/LoginForm.css" />
+    <link rel="stylesheet" href="../src/components/upload/UploadForm.css" />
     <title>say-anything-something</title>
 </head>
 
@@ -12,11 +12,11 @@
     <div id="root"></div>
 
     <script type="module">
-        import { LoginForm } from "../src/components/login/LoginForm.js";
+        import { UploadForm } from "../src/components/upload/UploadForm.js";
 
         document.addEventListener("DOMContentLoaded", () => {
-            const login = LoginForm();
-            login.render();
+            const upload = UploadForm();
+            upload.render();
         });
     </script>
 </body>
