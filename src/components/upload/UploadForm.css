@@ -1,0 +1,111 @@
+/*바디*/
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    background-color: #f3f3f3;
+    overflow-y: scroll;
+}
+
+.wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+/*업로드 컨테이너*/
+.upload-container {
+    width: 500px;
+    margin: 0 auto;
+}
+
+.upload-page-text {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+}
+
+.title-text {
+    font-weight: bold;
+    padding-top: 20px;
+}
+
+/**/
+
+.title-textarea {
+    width: 100%;
+    height: 40px;
+    resize: none;
+    padding: 5px;
+    font-family: inherit;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 1px solid #b3b3b3;
+    box-sizing: border-box;
+}
+
+.contents-textarea {
+    width: 100%;
+    height: 300px;
+    resize: none;
+    padding: 5px;
+    font-family: inherit;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 1px solid #b3b3b3;
+    box-sizing: border-box;
+}
+
+.title-textarea::placeholder,
+.contents-textarea::placeholder {
+    font-family: inherit;
+    color: #b3b3b3;
+    font-size: 18px;
+}
+
+/* */
+.image-text {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.file-select-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.file-select-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.file-select-button {
+    width: 70px;
+    height: 30px;
+    background-color: #bdbdbd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.file-select-text {
+    font-size: 14px;
+}
+
+.upload-button-location {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.upload-button {
+    width: 80%;
+    height: 40px;
+    background-color: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}

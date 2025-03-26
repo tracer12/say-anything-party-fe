@@ -57,7 +57,6 @@ export function ListForm() {
         ensureListContainer();
         const listContainer = document.querySelector(".list-container");
 
-        // 기존 게시글 제거 후 새롭게 추가 (중복 방지)
         document.querySelectorAll(".post").forEach(post => post.remove());
 
         const startIndex = (currentPage - 1) * postsPerPage;

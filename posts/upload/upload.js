@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileSelectButton = document.querySelector(".file-select-button");
     const fileSelectText = document.querySelector(".file-select-text");
 
-    let selectedImageFile = null; // ✅ 선택한 파일 저장
+    let selectedImageFile = null;
 
     // 파일 선택 버튼 클릭 시 파일 업로드 창 띄우기
     fileSelectButton.addEventListener("click", () => {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fileInput.addEventListener("change", (event) => {
             const file = event.target.files[0];
             if (file) {
-                selectedImageFile = file; // ✅ 선택한 파일 저장
+                selectedImageFile = file;
                 fileSelectText.textContent = file.name;
             }
         });
