@@ -45,51 +45,6 @@ export function UploadForm() {
         setupEventListeners();
     }
 
-    // function loadHeader() {
-    //     fetch("../src/components/header/header.html")
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             document.getElementById("header-container").innerHTML = data;
-    //             setupProfileDropdown();
-    //         })
-    //         .catch(error => console.error("헤더 로드 실패:", error));
-
-    //     if (!document.querySelector("link[href*='header.css']")) {
-    //         const link = document.createElement("link");
-    //         link.rel = "stylesheet";
-    //         link.href = "../src/components/header/header.css";
-    //         document.head.appendChild(link);
-    //     }
-    // }
-
-    // function setupProfileDropdown() {
-    //     const profileIcon = document.getElementById("profile-icon");
-    //     const dropdownMenu = document.getElementById("dropdown-menu");
-
-    //     if (!profileIcon || !dropdownMenu) return;
-
-    //     const profileImageUrl = localStorage.getItem("profileImage") || "";
-    //     if (profileImageUrl) {
-    //         profileIcon.style.backgroundImage = `url(http://localhost:8080${profileImageUrl})`;
-    //         profileIcon.style.backgroundSize = "cover";
-    //         profileIcon.style.backgroundPosition = "center";
-    //         profileIcon.style.width = "30px";
-    //         profileIcon.style.height = "30px";
-    //         profileIcon.style.borderRadius = "50%";
-    //     } else {
-    //         profileIcon.innerHTML = `<div class="default-profile"></div>`;
-    //     }
-
-    //     profileIcon.addEventListener("click", () => {
-    //         dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
-    //     });
-
-    //     document.addEventListener("click", (event) => {
-    //         if (!event.target.closest(".profile-list")) {
-    //             dropdownMenu.style.display = "none";
-    //         }
-    //     });
-    // }
 
     function setupEventListeners() {
         const titleTextarea = document.getElementById("title-textarea");

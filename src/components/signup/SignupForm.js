@@ -140,8 +140,8 @@ export function SignupForm() {
 
         function toggleSignupButton() {
             signupButton.disabled = !(
-                validateEmail(emailInput.value) &&
-                validatePassword(passwordInput.value) &&
+                EmailValidator(emailInput.value) &&
+                PasswordValidator(passwordInput.value) &&
                 passwordInput.value === passwordInputCheck.value &&
                 nicknameInput.value.trim().length > 0
             );
