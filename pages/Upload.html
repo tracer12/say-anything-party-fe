@@ -10,7 +10,14 @@
 
 <body>
     <div id="root"></div>
+    <script type="module">
+        import { HeaderForm } from "../src/components/header/HeaderForm.js";
 
+        document.addEventListener("DOMContentLoaded", () => {
+            const header = HeaderForm();
+            header.render();
+        });
+    </script>
     <script type="module">
         import { UploadForm } from "../src/components/upload/UploadForm.js";
 

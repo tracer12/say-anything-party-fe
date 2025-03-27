@@ -26,7 +26,6 @@ export function DetailForm() {
             return;
         }
 
-
         try {
             const { post, comments } = await GetPostUtils(state.selectedPostId);
             state.post = post;
@@ -34,7 +33,6 @@ export function DetailForm() {
             render();
         } catch (error) {
             alert("게시글을 불러오는 중 오류가 발생했습니다.");
-            //window.location.href = "/list";
         }
     }
 
@@ -117,16 +115,8 @@ export function DetailForm() {
             window.location.href = "../pages/edit.html";
         });
 
-        document.querySelector(".post-delete-button").addEventListener("click", async () => {
-            if (confirm("게시글을 삭제하시겠습니까?")) {
-                try {
-                    await DeletePostUtils(state.selectedPostId);
-
-                } catch (error) {
-                    alert("해당 게시글을 삭제 할 권한이 없습니다.");
-                    postModal.style.display = "none";
-                }
-            }
+        document.querySelector(".post-delete-button").addEventListener("click", () => {
+            showPostDeleteModal();
         });
 
         document.querySelector(".like-button").addEventListener("click", async () => {
@@ -171,11 +161,68 @@ export function DetailForm() {
             }
 
             if (event.target.classList.contains("comment-delete-button")) {
-                if (confirm("댓글을 삭제하시겠습니까?")) {
-                    await DeleteCommentUtils(state.selectedPostId, selectedCommentId);
-                    fetchPostData();
-                }
+                showCommentDeleteModal(selectedCommentId);
             }
+        });
+    }
+
+    function showPostDeleteModal() {
+        const detailContainer = document.querySelector(".detail-container");
+        const postModal = document.createElement("div");
+        postModal.classList.add("modal-post");
+        postModal.innerHTML = `
+            <div class="modal">
+                <div class="modal-content">
+                    <p class="modal-delete-text">게시글을 삭제하시겠습니까?</p>
+                    <p>삭제한 내용은 복구할 수 없습니다.</p>
+                    <button class="modal-cancel-button">취소</button>
+                    <button class="modal-post-button-confirm">확인</button>
+                </div>
+            </div>
+        `;
+        detailContainer.appendChild(postModal);
+
+        postModal.querySelector(".modal-cancel-button").addEventListener("click", () => {
+            postModal.remove();
+        });
+
+        postModal.querySelector(".modal-post-button-confirm").addEventListener("click", async () => {
+            try {
+                await DeletePostUtils(state.selectedPostId);
+                alert("게시글이 삭제되었습니다.");
+                window.location.href = "/list";
+            } catch (error) {
+                alert("해당 게시글을 삭제할 권한이 없습니다.");
+            } finally {
+                postModal.remove();
+            }
+        });
+    }
+
+    function showCommentDeleteModal(commentId) {
+        const detailContainer = document.querySelector(".detail-container");
+        const commentModal = document.createElement("div");
+        commentModal.classList.add("modal-comment");
+        commentModal.innerHTML = `
+            <div class="modal">
+                <div class="modal-content">
+                    <p class="modal-comment-delete-text">댓글을 삭제하시겠습니까?</p>
+                    <p>삭제한 내용은 복구할 수 없습니다.</p>
+                    <button class="modal-cancel-button">취소</button>
+                    <button class="modal-comment-button-confirm">확인</button>
+                </div>
+            </div>
+        `;
+        detailContainer.appendChild(commentModal);
+
+        commentModal.querySelector(".modal-cancel-button").addEventListener("click", () => {
+            commentModal.remove();
+        });
+
+        commentModal.querySelector(".modal-comment-button-confirm").addEventListener("click", async () => {
+            await DeleteCommentUtils(state.selectedPostId, commentId);
+            fetchPostData();
+            commentModal.remove();
         });
     }
 

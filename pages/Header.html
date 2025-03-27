@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../src/components/detail/DetailForm.css" />
+    <link rel="stylesheet" href="../src/components/header/HeaderForm.css" />
     <title>say-anything-something</title>
 </head>
 
@@ -17,15 +17,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             const header = HeaderForm();
             header.render();
-        });
-    </script>
-
-    <script type="module">
-        import { DetailForm } from "../src/components/detail/DetailForm.js";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const detail = DetailForm();
-            detail.fetchPostData();
         });
     </script>
 </body>

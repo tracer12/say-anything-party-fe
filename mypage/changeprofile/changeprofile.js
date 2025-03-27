@@ -157,10 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 reader.readAsDataURL(file);
             }
         });
-    }); 4
-
-
-
+    });
 
     changeProfileButton.addEventListener("click", async () => {
         const nicknameValue = nicknameInput.value.trim();
