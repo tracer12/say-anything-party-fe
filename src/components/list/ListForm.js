@@ -1,5 +1,6 @@
 import { ListUtils } from "../../utils/listUtils/ListUtils.js";
 import { HeaderForm } from "../header/HeaderForm.js"
+import { navigateTo } from "../../../index.js"
 
 export function ListForm() {
     let currentPage = 1;
@@ -14,7 +15,7 @@ export function ListForm() {
 
         if (!accessToken) {
             alert("로그인이 필요합니다.");
-            window.location.href = "../login";
+            navigateTo("../login");
             return;
         }
 
@@ -124,7 +125,7 @@ export function ListForm() {
 
         postElement.addEventListener("click", () => {
             localStorage.setItem("selectedPostId", post.pid);
-            window.location.href = "../pages/detail.html";
+            navigateTo("../detail");
         });
 
         return postElement;
