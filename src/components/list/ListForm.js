@@ -10,7 +10,7 @@ export function ListForm() {
 
         if (!accessToken) {
             alert("로그인이 필요합니다.");
-            window.location.href = "/login/login.html";
+            window.location.href = "../pages/login.html";
             return;
         }
 

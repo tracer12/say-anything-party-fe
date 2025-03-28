@@ -22,7 +22,7 @@ export function DetailForm() {
     async function fetchPostData() {
         if (!state.selectedPostId) {
             alert("잘못된 접근입니다.");
-            window.location.href = "/list";
+            window.location.href = "../pages/list.html";
             return;
         }
 

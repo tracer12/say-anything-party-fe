@@ -47,7 +47,7 @@ export function HeaderForm() {
         if (!document.querySelector("link[href*='header.css']")) {
             const link = document.createElement("link");
             link.rel = "stylesheet";
-            link.href = "../../header/header.css";
+            link.href = "/src/components/header/HeaderForm.css";
             document.head.appendChild(link);
         }
 
@@ -73,6 +73,7 @@ export function HeaderForm() {
                 text-align: left;
                 padding: 10px;
                 cursor: pointer;
+                font-size:16px;
             }
             .dropdown-item:hover {
                 background-color: #f0f0f0;
@@ -127,7 +128,7 @@ export function HeaderForm() {
                 if (titleElement) {
                     titleElement.style.cursor = "pointer";
                     titleElement.addEventListener("click", () => {
-                        window.location.href = "/pages/list.html";
+                        window.location.href = "../pages/list.html";
                     });
                 }
             }

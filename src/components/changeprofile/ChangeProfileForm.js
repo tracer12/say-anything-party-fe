@@ -23,7 +23,6 @@ export function ChangeProfileForm() {
         } catch (error) {
             console.error("사용자 정보 요청 중 오류 발생:", error.message);
         }
-
     }
 
     function render() {
@@ -64,15 +63,6 @@ export function ChangeProfileForm() {
                             <button class="deleteprofile-button">회원 탈퇴</button>
                         </div>
                     </article>
-
-                    <div class="modal" id="delete-modal">
-                        <div class="modal-content">
-                            <p class="modal-delete-text">회원 탈퇴 하시겠습니까?</p>
-                            <p>작성된 게시글과 댓글은 삭제됩니다.</p>
-                            <button class="modal-cancel-button">취소</button>
-                            <button class="modal-button-confirm">확인</button>
-                        </div>
-                    </div>
                 </div>
             </section>
         `;
@@ -86,12 +76,9 @@ export function ChangeProfileForm() {
         const changeProfileButton = document.querySelector(".changeprofile-button");
         const profileUploader = document.getElementById("profile-uploader");
         const deleteProfileButton = document.querySelector(".deleteprofile-button");
-        const modal = document.getElementById("delete-modal");
-        const cancelButton = modal.querySelector(".modal-cancel-button");
-        const confirmButton = modal.querySelector(".modal-button-confirm");
 
-        nicknameInput.addEventListener('blur', () => {
-            const helperText = document.querySelector('.nickname-helper-text');
+        nicknameInput.addEventListener("blur", () => {
+            const helperText = document.querySelector(".nickname-helper-text");
             const nickname = nicknameInput.value.trim();
             helperText.textContent =
                 !nickname ? "*닉네임을 입력해주세요." :
@@ -119,6 +106,7 @@ export function ChangeProfileForm() {
             });
         });
 
+        // "수정하기" 버튼 클릭 시 프로필 변경
         changeProfileButton.addEventListener("click", async () => {
             const nicknameValue = nicknameInput.value.trim();
             const formData = new FormData();
@@ -128,42 +116,68 @@ export function ChangeProfileForm() {
             if (state.profileImageFile) {
                 formData.append("profile_image", state.profileImageFile);
             }
-            ChangeProfileUtils(formData, accessToken);
+            await ChangeProfileUtils(formData, accessToken);
         });
 
-        deleteProfileButton.addEventListener("click", () => {
-            modal.style.display = "flex";
+        // 🔥 회원 탈퇴 버튼 클릭 시 모달 표시
+        deleteProfileButton.addEventListener("click", showDeleteUserModal);
+    }
+
+    // 🔥 회원 탈퇴 모달 생성 및 동작 함수
+    function showDeleteUserModal() {
+        const changeProfileContainer = document.querySelector(".changeprofile-container");
+        const modal = document.createElement("div");
+        modal.classList.add("modal");
+        modal.innerHTML = `
+            <div class="modal-content">
+                <p class="modal-delete-text">회원 탈퇴 하시겠습니까?</p>
+                <p>작성된 게시글과 댓글은 삭제됩니다.</p>
+                <button class="modal-cancel-button">취소</button>
+                <button class="modal-confirm-button">확인</button>
+            </div>
+        `;
+
+        changeProfileContainer.appendChild(modal);
+
+        // 취소 버튼 클릭 시 모달 닫기
+        modal.querySelector(".modal-cancel-button").addEventListener("click", () => {
+            modal.remove();
         });
 
-        cancelButton.addEventListener("click", () => {
-            modal.style.display = "none";
+        // 확인 버튼 클릭 시 회원 탈퇴 처리
+        modal.querySelector(".modal-confirm-button").addEventListener("click", async () => {
+            try {
+                const accessToken = localStorage.getItem("accessToken");
+                await DeleteUserUtils(accessToken);
+                alert("회원 탈퇴가 완료되었습니다.");
+                localStorage.clear();
+                window.location.href = "/";
+            } catch (error) {
+                alert("회원 탈퇴 중 오류가 발생했습니다.");
+            } finally {
+                modal.remove();
+            }
         });
 
-        confirmButton.addEventListener("click", async () => {
-            const accessToken = localStorage.getItem("accessToken");
-            DeleteUserUtils(accessToken);
-        });
-
-        window.addEventListener("click", (e) => {
+        // 모달 바깥 클릭 시 닫기
+        modal.addEventListener("click", (e) => {
             if (e.target === modal) {
-                modal.style.display = "none";
+                modal.remove();
             }
         });
     }
 
     function setProfileImage() {
         const profileUploader = document.getElementById("profile-uploader");
-        const profileImageUrl = localStorage.getItem('profileImage') || "";
+        const profileImageUrl = localStorage.getItem("profileImage") || "";
 
         profileUploader.style.backgroundImage = `url(http://localhost:8080${profileImageUrl})`;
-        profileUploader.style.backgroundSize = 'cover';
-        profileUploader.style.backgroundPosition = 'center';
-        profileUploader.style.width = '160px';
-        profileUploader.style.height = '160px';
-        profileUploader.style.borderRadius = '50%';
+        profileUploader.style.backgroundSize = "cover";
+        profileUploader.style.backgroundPosition = "center";
+        profileUploader.style.width = "160px";
+        profileUploader.style.height = "160px";
+        profileUploader.style.borderRadius = "50%";
     }
-
-
 
     return { render, fetchUserData };
 }

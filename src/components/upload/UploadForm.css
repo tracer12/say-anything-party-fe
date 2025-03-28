@@ -5,6 +5,7 @@ body {
     justify-content: center;
     background-color: #f3f3f3;
     overflow-y: scroll;
+    margin-top : 25px;
 }
 
 .wrap {
