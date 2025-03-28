@@ -90,7 +90,7 @@ export function HeaderForm() {
                     if (window.history.length > 1) {
                         window.history.back();
                     } else {
-                        window.location.href = "../../pages/list.html";
+                        window.location.href = "../list";
                     }
                 });
             }
@@ -103,7 +103,7 @@ export function HeaderForm() {
                     localStorage.removeItem("profileImage");
                     localStorage.removeItem("selectedPostId");
                     alert("로그아웃 되었습니다.");
-                    window.location.href = "../pages/login.html";
+                    window.location.href = "../login";
                 });
             }
 

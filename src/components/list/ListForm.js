@@ -1,4 +1,5 @@
 import { ListUtils } from "../../utils/listUtils/ListUtils.js";
+import { HeaderForm } from "../header/HeaderForm.js"
 
 export function ListForm() {
     let currentPage = 1;
@@ -6,11 +7,14 @@ export function ListForm() {
     let allPosts = [];
 
     async function render() {
+        const headerForm = new HeaderForm();
+        headerForm.render();
+
         const accessToken = localStorage.getItem("accessToken");
 
         if (!accessToken) {
             alert("로그인이 필요합니다.");
-            window.location.href = "../pages/login.html";
+            window.location.href = "../login";
             return;
         }
 

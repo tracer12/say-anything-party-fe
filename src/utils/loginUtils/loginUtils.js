@@ -1,3 +1,5 @@
+import { navigateTo } from "../../../index.js"
+
 export function LoginUtils(emailInput, passwordInput) {
     console.log(emailInput, passwordInput)
     fetch("http://localhost:8080/users/auth", {
@@ -22,7 +24,7 @@ export function LoginUtils(emailInput, passwordInput) {
             localStorage.setItem("refreshToken", data.refreshToken);
 
             alert("로그인 성공!");
-            window.location.href = "List.html";
+            navigateTo("../list");
         })
         .catch((error) => {
             console.error("로그인 요청 중 오류 발생:", error.message);

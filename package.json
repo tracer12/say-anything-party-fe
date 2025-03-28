@@ -1,0 +1,23 @@
+{
+  "name": "say-anything-party",
+  "version": "1.0.0",
+  "description": "say-anything-something 프론트엔드 디벨롭 브렌치입니다.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tracer12/say-anything-party-fe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tracer12/say-anything-party-fe/issues"
+  },
+  "homepage": "https://github.com/tracer12/say-anything-party-fe#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

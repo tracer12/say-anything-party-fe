@@ -2,6 +2,7 @@ import { LoginUtils } from "../../utils/loginUtils/LoginUtils.js";
 import { EmailValidator } from "../../utils/validatorUtils/emailValidatorUtils/EmailValidatorUtils.js";
 import { PasswordValidator } from "../../utils/validatorUtils/passwordValidatorUtils/PasswordValidatorUtils.js";
 
+
 export function LoginForm() {
     const state = {
         email: "",
