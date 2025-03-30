@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const emailValue = emailInput.value.trim();
         const passwordValue = passwordInput.value.trim();
 
-
         fetch("http://localhost:8080/users/auth", {
             method: "POST",
             headers: {
@@ -60,6 +59,9 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         })
             .then(response => {
+                if (response.status === 401) {
+                    throw new Error("401");
+                }
                 if (!response.ok) {
                     throw new Error(`로그인 실패: ${response.status}`);
                 }
@@ -74,10 +76,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.location.href = "../posts/list/list.html";
             })
             .catch(error => {
-                console.error("로그인 요청 중 오류 발생:", error.message);
+                if (error.message === "401") {
+                    alert("해당 계정이 없습니다.");
+                } else {
+                    console.error("로그인 요청 중 오류 발생:", error.message);
+                }
             });
     });
 
 });
-
-
