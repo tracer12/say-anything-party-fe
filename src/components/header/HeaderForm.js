@@ -2,6 +2,22 @@ import { navigateTo } from "../../../index.js";
 
 export function HeaderForm() {
     function render() {
+        // 기존 헤더가 있으면 제거
+        const existingHeader = document.getElementById("header-container");
+        if (existingHeader) {
+            existingHeader.remove();
+        }
+
+        // 기존 content-wrapper가 있으면 내부 요소만 body로 복원 후 제거
+        const existingWrapper = document.querySelector(".content-wrapper");
+        if (existingWrapper) {
+            while (existingWrapper.firstChild) {
+                document.body.appendChild(existingWrapper.firstChild);
+            }
+            existingWrapper.remove();
+        }
+
+        // 헤더 생성
         const headerContainer = document.createElement("header");
         headerContainer.id = "header-container";
 
@@ -29,6 +45,7 @@ export function HeaderForm() {
 
         document.body.prepend(headerContainer);
 
+        // content-wrapper 생성 후 나머지 요소 옮기기
         let contentWrapper = document.querySelector(".content-wrapper");
         if (!contentWrapper) {
             contentWrapper = document.createElement("div");
@@ -75,7 +92,7 @@ export function HeaderForm() {
                 text-align: left;
                 padding: 10px;
                 cursor: pointer;
-                font-size:16px;
+                font-size: 16px;
             }
             .dropdown-item:hover {
                 background-color: #f0f0f0;
@@ -92,7 +109,7 @@ export function HeaderForm() {
                     if (window.history.length > 1) {
                         window.history.back();
                     } else {
-                        navigateTo("/list")
+                        navigateTo("/list");
                     }
                 });
             }

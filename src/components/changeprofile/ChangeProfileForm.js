@@ -1,4 +1,5 @@
 import { GetUserInfoUtils, ChangeProfileUtils, DeleteUserUtils } from "../../utils/changeProfileUtils/ChangeProfileUtils.js";
+import { HeaderForm } from "../header/HeaderForm.js";
 
 export function ChangeProfileForm() {
     const state = {
@@ -7,7 +8,7 @@ export function ChangeProfileForm() {
         email: "",
     };
 
-    async function fetchUserData() {
+    async function render() {
         const accessToken = localStorage.getItem("accessToken");
         if (!accessToken) {
             alert("로그인이 필요합니다.");
@@ -19,13 +20,15 @@ export function ChangeProfileForm() {
             const userData = await GetUserInfoUtils(accessToken);
             state.nickname = userData.nickname;
             state.email = userData.email;
-            render();
         } catch (error) {
             console.error("사용자 정보 요청 중 오류 발생:", error.message);
+            return;
         }
-    }
 
-    function render() {
+                
+        const header = new HeaderForm();
+        header.render();
+
         const root = document.getElementById("root");
         root.innerHTML = `
             <section class="wrap">
@@ -106,7 +109,6 @@ export function ChangeProfileForm() {
             });
         });
 
-        // "수정하기" 버튼 클릭 시 프로필 변경
         changeProfileButton.addEventListener("click", async () => {
             const nicknameValue = nicknameInput.value.trim();
             const formData = new FormData();
@@ -119,11 +121,9 @@ export function ChangeProfileForm() {
             await ChangeProfileUtils(formData, accessToken);
         });
 
-        // 🔥 회원 탈퇴 버튼 클릭 시 모달 표시
         deleteProfileButton.addEventListener("click", showDeleteUserModal);
     }
 
-    // 🔥 회원 탈퇴 모달 생성 및 동작 함수
     function showDeleteUserModal() {
         const changeProfileContainer = document.querySelector(".changeprofile-container");
         const modal = document.createElement("div");
@@ -139,12 +139,10 @@ export function ChangeProfileForm() {
 
         changeProfileContainer.appendChild(modal);
 
-        // 취소 버튼 클릭 시 모달 닫기
         modal.querySelector(".modal-cancel-button").addEventListener("click", () => {
             modal.remove();
         });
 
-        // 확인 버튼 클릭 시 회원 탈퇴 처리
         modal.querySelector(".modal-confirm-button").addEventListener("click", async () => {
             try {
                 const accessToken = localStorage.getItem("accessToken");
@@ -159,7 +157,6 @@ export function ChangeProfileForm() {
             }
         });
 
-        // 모달 바깥 클릭 시 닫기
         modal.addEventListener("click", (e) => {
             if (e.target === modal) {
                 modal.remove();
@@ -179,5 +176,5 @@ export function ChangeProfileForm() {
         profileUploader.style.borderRadius = "50%";
     }
 
-    return { render, fetchUserData };
+    return { render };
 }

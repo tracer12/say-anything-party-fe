@@ -1,4 +1,5 @@
 import { ChangePasswordUtils } from "../../utils/changePasswordUtils/ChangePasswordUtils.js";
+import { HeaderForm } from "../header/HeaderForm.js";
 
 export function ChangePasswordForm() {
     const state = {
@@ -7,6 +8,10 @@ export function ChangePasswordForm() {
     };
 
     function render() {
+            
+        const header = new HeaderForm();
+        header.render();
+
         const root = document.getElementById("root");
         root.innerHTML = `
             <section class="wrap">

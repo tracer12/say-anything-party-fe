@@ -55,7 +55,6 @@ export function ListForm() {
             `;
     
             root.appendChild(listContainer);
-            console.log("test")
             listContainer.querySelector(".upload-button").addEventListener("click", () => {
                 navigateTo("/upload");
             });
