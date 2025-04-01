@@ -146,7 +146,6 @@ export function ListForm() {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        console.log("깃허브 토큰 테스트")
         render();
     });
 
