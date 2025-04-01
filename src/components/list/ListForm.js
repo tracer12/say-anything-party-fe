@@ -146,7 +146,6 @@ export function ListForm() {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        console.log("asdfasdf")
         render();
     });
 
