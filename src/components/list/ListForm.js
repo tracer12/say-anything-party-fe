@@ -8,8 +8,6 @@ export function ListForm() {
     let allPosts = [];
 
     async function render() {
-        const headerForm = new HeaderForm();
-        headerForm.render();
 
         const accessToken = localStorage.getItem("accessToken");
 
@@ -25,20 +23,24 @@ export function ListForm() {
             return;
         }
 
+        
+        const header = new HeaderForm();
+        header.render();
         ensureListContainer();
         displayPosts();
         window.addEventListener("scroll", handleScroll);
     }
 
     function ensureListContainer() {
-        let listContainer = document.querySelector(".list-container");
+        const root = document.getElementById("root");
+        let listContainer = root.querySelector(".list-container");
+    
         if (!listContainer) {
             console.warn("list-container가 없어 새로 생성합니다.");
-            const wrap = document.querySelector(".wrap") || document.body;
-
+    
             listContainer = document.createElement("div");
             listContainer.className = "list-container";
-
+    
             listContainer.innerHTML = `
                 <article>
                     <p class="welcome-list-text">
@@ -51,10 +53,11 @@ export function ListForm() {
                     </div>
                 </article>
             `;
-            wrap.appendChild(listContainer);
-
-            document.querySelector(".upload-button").addEventListener("click", () => {
-                window.location.href = "../pages/upload.html";
+    
+            root.appendChild(listContainer); // ✅ root에 넣기
+    
+            listContainer.querySelector(".upload-button").addEventListener("click", () => {
+                navigateTo("/upload");
             });
         }
     }
@@ -125,7 +128,8 @@ export function ListForm() {
 
         postElement.addEventListener("click", () => {
             localStorage.setItem("selectedPostId", post.pid);
-            navigateTo("../detail");
+            navigateTo("/detail");
+            return;
         });
 
         return postElement;

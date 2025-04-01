@@ -1,6 +1,7 @@
 import { PasswordValidator } from "../../utils/validatorUtils/passwordValidatorUtils/PasswordValidatorUtils.js";
 import { EmailValidator } from "../../utils/validatorUtils/emailValidatorUtils/EmailValidatorUtils.js";
 import { SignupUtils } from "../../utils/signupUtils/SignupUtils.js";
+import { navigateTo } from "../../../index.js";
 
 export function SignupForm() {
     const state = {

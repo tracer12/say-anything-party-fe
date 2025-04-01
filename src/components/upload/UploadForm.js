@@ -1,4 +1,5 @@
 import { UploadUtils } from "../../utils/uploadUtils/UploadUtils.js";
+import { navigateTo } from "../../../index.js";
 
 export function UploadForm() {
     let selectedImageFile = null;
@@ -40,8 +41,6 @@ export function UploadForm() {
                 </div>
             </section>
         `;
-
-        //loadHeader();
         setupEventListeners();
     }
 
@@ -80,7 +79,7 @@ export function UploadForm() {
 
             if (!accessToken) {
                 alert("로그인이 필요합니다.");
-                window.location.href = "/login/login.html";
+                navigateTo("/login");
                 return;
             }
 

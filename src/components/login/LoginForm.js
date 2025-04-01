@@ -1,6 +1,7 @@
 import { LoginUtils } from "../../utils/loginUtils/LoginUtils.js";
 import { EmailValidator } from "../../utils/validatorUtils/emailValidatorUtils/EmailValidatorUtils.js";
 import { PasswordValidator } from "../../utils/validatorUtils/passwordValidatorUtils/PasswordValidatorUtils.js";
+import { navigateTo } from "../../../index.js";
 
 
 export function LoginForm() {
@@ -34,12 +35,18 @@ export function LoginForm() {
                 ${InputField("이메일", "text", "email", "이메일을 입력하세요", state.emailHelper)}
                 ${InputField("비밀번호", "password", "password", "비밀번호를 입력하세요", state.passwordHelper)}
                 <button class="login-button" id="login-button">로그인</button>
-                <a href="/pages/signup.html" onclick="changeUrl('/signup'); return false;">
+                <a href="/signup" id="signup-link">
                     <p class="signup-text">회원가입</p>
                 </a>
             </div>
         `;
+    
+        document.getElementById("signup-link").addEventListener("click", (event) => {
+            event.preventDefault();
+            navigateTo("/signup");
+        });
         attachEventListeners();
+        
     }
 
 

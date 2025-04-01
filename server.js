@@ -6,7 +6,13 @@ const PORT = 3000;
 
 // 정적 파일 제공 (public 폴더 & src 폴더)
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/src", express.static(path.join(__dirname, "src"))); // 🔥 추가
+app.use("/src", express.static(path.join(__dirname, "src"), { 
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith(".js")) {
+            res.setHeader("Content-Type", "application/javascript"); // ✅ MIME 타입 설정
+        }
+    }
+}));
 
 // SPA를 위한 라우팅 설정
 app.get("*", (req, res) => {

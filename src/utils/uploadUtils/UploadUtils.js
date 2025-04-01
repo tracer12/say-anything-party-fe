@@ -1,3 +1,5 @@
+import { navigateTo } from "../../../index.js";
+
 export async function UploadUtils(formData, accessToken) {
     try {
         const response = await fetch("http://localhost:8080/posts", {
@@ -13,7 +15,7 @@ export async function UploadUtils(formData, accessToken) {
         }
 
         alert("게시글이 성공적으로 작성되었습니다!");
-        window.location.href = "../pages/upload.html";
+        navigateTo("/list")
 
 
     } catch (error) {

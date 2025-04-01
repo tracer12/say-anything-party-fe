@@ -1,4 +1,5 @@
 import { GetPostData, EditPost } from "../../utils/editUtils/EditUtils.js";
+import { HeaderForm } from "../header/HeaderForm.js"
 
 export function EditForm() {
     const state = {
@@ -14,6 +15,9 @@ export function EditForm() {
             window.location.href = "../pages/List.html";
             return;
         }
+
+        const header = new HeaderForm();
+        header.render();
 
         const root = document.getElementById("root");
         root.innerHTML = `

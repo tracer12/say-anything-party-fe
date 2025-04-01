@@ -1,3 +1,5 @@
+import { navigateTo } from "../../../index.js";
+
 export function HeaderForm() {
     function render() {
         const headerContainer = document.createElement("header");
@@ -90,7 +92,7 @@ export function HeaderForm() {
                     if (window.history.length > 1) {
                         window.history.back();
                     } else {
-                        window.location.href = "../list";
+                        navigateTo("/list")
                     }
                 });
             }
@@ -112,13 +114,13 @@ export function HeaderForm() {
 
             if (changeProfileButton) {
                 changeProfileButton.addEventListener("click", () => {
-                    window.location.href = "../pages/changeprofile.html";
+                    navigateTo("/changeprofile");
                 });
             }
 
             if (changePasswordButton) {
                 changePasswordButton.addEventListener("click", () => {
-                    window.location.href = "../pages/changepassword.html";
+                    navigateTo("/changepassword");
                 });
             }
 
@@ -128,7 +130,7 @@ export function HeaderForm() {
                 if (titleElement) {
                     titleElement.style.cursor = "pointer";
                     titleElement.addEventListener("click", () => {
-                        window.location.href = "../pages/list.html";
+                        navigateTo("/list");
                     });
                 }
             }

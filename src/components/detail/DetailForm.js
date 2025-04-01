@@ -1,4 +1,6 @@
 import { GetPostUtils, DeletePostUtils, LikeUtils, UploadCommentUtils, EditCommentUtils, DeleteCommentUtils } from "../../utils/detailUtils/DetailUtils.js";
+import { HeaderForm } from "../header/HeaderForm.js";
+import { navigateTo } from "../../../index.js";
 
 export function DetailForm() {
     const state = {
@@ -19,26 +21,30 @@ export function DetailForm() {
         });
     }
 
-    async function fetchPostData() {
+    async function render() {
+        const root = document.getElementById("root");
+        root.innerHTML = "";
+
+            const header = new HeaderForm();
+            header.render();
+
         if (!state.selectedPostId) {
             alert("잘못된 접근입니다.");
-            window.location.href = "../pages/list.html";
+            window.location.href = "/list";
             return;
         }
 
         try {
+            // ✅ 게시글 + 댓글 데이터 요청
             const { post, comments } = await GetPostUtils(state.selectedPostId);
             state.post = post;
             state.comments = comments;
-            render();
         } catch (error) {
             alert("게시글을 불러오는 중 오류가 발생했습니다.");
+            return;
         }
-    }
 
-    function render() {
-        const root = document.getElementById("root");
-        if (!state.post) return;
+        // ✅ 상태 기반 렌더링
         root.innerHTML = `
             <div class="detail-container">
                 <h2 class="post-title">${state.post.title}</h2>
@@ -112,7 +118,7 @@ export function DetailForm() {
 
     function attachEventListeners() {
         document.querySelector(".post-edit-button").addEventListener("click", () => {
-            window.location.href = "../pages/edit.html";
+            navigateTo("/edit")
         });
 
         document.querySelector(".post-delete-button").addEventListener("click", () => {
@@ -121,7 +127,7 @@ export function DetailForm() {
 
         document.querySelector(".like-button").addEventListener("click", async () => {
             await LikeUtils(state.selectedPostId);
-            fetchPostData();
+            render(); // 좋아요 수 업데이트 후 재렌더링
         });
 
         document.querySelector(".comment-input-button").addEventListener("click", async () => {
@@ -135,7 +141,7 @@ export function DetailForm() {
             try {
                 await UploadCommentUtils(state.selectedPostId, commentContent);
                 alert("댓글이 등록되었습니다.");
-                fetchPostData();
+                render(); // 등록 후 재렌더링
             } catch (error) {
                 alert("댓글 등록에 실패했습니다.");
             }
@@ -154,7 +160,7 @@ export function DetailForm() {
                 try {
                     await EditCommentUtils(state.selectedPostId, selectedCommentId, newContent);
                     alert("댓글이 수정되었습니다.");
-                    fetchPostData();
+                    render(); // 수정 후 재렌더링
                 } catch (error) {
                     alert("댓글 수정 권한이 없습니다.");
                 }
@@ -221,10 +227,10 @@ export function DetailForm() {
 
         commentModal.querySelector(".modal-comment-button-confirm").addEventListener("click", async () => {
             await DeleteCommentUtils(state.selectedPostId, commentId);
-            fetchPostData();
+            render(); // 삭제 후 재렌더링
             commentModal.remove();
         });
     }
 
-    return { fetchPostData, render };
+    return { render };
 }
