@@ -31,12 +31,12 @@ export function LoginForm() {
         const root = document.getElementById("root");
         root.innerHTML = `
             <div class="login-container">
-                <p class="login-text">로그인</p>
+                <p class="login-page-login-text">로그인</p>
                 ${InputField("이메일", "text", "email", "이메일을 입력하세요", state.emailHelper)}
                 ${InputField("비밀번호", "password", "password", "비밀번호를 입력하세요", state.passwordHelper)}
                 <button class="login-button" id="login-button">로그인</button>
                 <a href="/signup" id="signup-link">
-                    <p class="signup-text">회원가입</p>
+                    <p class="login-page-signup-text">회원가입</p>
                 </a>
             </div>
         `;

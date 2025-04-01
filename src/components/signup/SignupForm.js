@@ -31,7 +31,7 @@ export function SignupForm() {
         const root = document.getElementById("root");
         root.innerHTML = `
             <div class="signup-container">
-            <p class="signup-text">회원가입</p>
+            <p class="signup-page-signup-text">회원가입</p>
             <div class = "upload-profile">
                 <div class="profile-icon"></div>
             </div>
@@ -41,7 +41,7 @@ export function SignupForm() {
             ${InputField("닉네임", "text", "nickname", "닉네임을 입력하세요", state.nicknameHelper)}
             <button class="signup-button" id="signup-button" disabled>회원가입</button>
             <a href="../login/login.html">
-                <p class="login-text">로그인</p>
+                <p class="signup-page-login-text">로그인</p>
             </a>
         </div>
         `;

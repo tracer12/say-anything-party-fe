@@ -55,7 +55,7 @@ body {
     margin: 0 auto;
 }
 
-.login-text {
+.login-page-login-text {
     font-size: 2em;
     font-weight: bold;
     text-align: center;
@@ -110,7 +110,7 @@ body {
     background-color: #7F6AEE;
 }
 
-.signup-text {
+.login-page-signup-text {
     text-align: center;
     font-size: 15px;
 }
