@@ -54,7 +54,7 @@ export function ListForm() {
                 </article>
             `;
     
-            root.appendChild(listContainer); // ✅ root에 넣기
+            root.appendChild(listContainer);
     
             listContainer.querySelector(".upload-button").addEventListener("click", () => {
                 navigateTo("/upload");
